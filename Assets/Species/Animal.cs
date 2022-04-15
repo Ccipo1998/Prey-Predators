@@ -3,27 +3,33 @@ using UnityEngine;
 
 namespace Assets.Species
 {
-    public class Animal
+    public class Animal : MonoBehaviour
     {
-        // Game Object associated with the Animal
-        public GameObject GameObject;
-
         // all animals have the same needs
+        [Range(0, 100)]
         public int Food;
+        [Range(0, 100)]
         public int Water;
+        [Range(0, 100)]
         public int Space;
+        [Range(0, 100)]
         public int Sociality;
+        [Range(0, 100)]
         public int Energy;
         // animals have a type
         public AnimalType Type;
 
+        // resources change rates
+        public float FoodDecreaseRate;
+        public float WaterDecreaseRate;
+
         public Animal()
         {
             // starting values: 100%
-            Food = 100;
-            Water = 100;
-            Space = 100;
-            Sociality = 100;
+            Food = 50;
+            Water = 50;
+            Space = 50;
+            Sociality = 50;
             Energy = 100;
         }
     }

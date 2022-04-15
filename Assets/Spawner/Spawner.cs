@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Assets.Species;
+using Assets.GoalOrientedBehavior;
 
 namespace Assets.Spawner
 {
@@ -9,15 +10,17 @@ namespace Assets.Spawner
         // Use this for initialization
         void Start()
         {
-            GameObject ToSpawn = GameObject.FindGameObjectWithTag("Zebra");
-            ToSpawn.AddComponent<Rigidbody>();
-            ToSpawn.GetComponent<Rigidbody>().transform.position = Vector3.zero + new Vector3(0.0f, 1.0f, 0.0f);
+            GameObject Zebra = GameObject.FindGameObjectWithTag("Zebra");
+            Zebra.GetComponent<Rigidbody>().transform.position = Vector3.zero + new Vector3(0.0f, 1.0f, 0.0f);
+
+            // adding all the components
+            Zebra.AddComponent<Zebra>();
+            Zebra.AddComponent<GOB>();
 
             for (int i = 1; i < 5; i++)
             {
-                Zebra zebra = new Zebra(Instantiate(ToSpawn));
-                zebra.GameObject.AddComponent<Rigidbody>();
-                zebra.GameObject.GetComponent<Rigidbody>().transform.position = Vector3.zero + new Vector3((float)i * 2, 1.0f, 0.0f);
+                GameObject zebraClone = Instantiate(Zebra);
+                zebraClone.GetComponent<Rigidbody>().transform.position = Vector3.zero + new Vector3((float)i * 2, 1.0f, 0.0f);
             }
         }
 
