@@ -16,8 +16,12 @@ namespace Assets.Species
         public int Sociality;
         [Range(0, 100)]
         public int Energy;
+
         // animals have a type
         public AnimalType Type;
+
+        // animals have a knowledge of the surrounding environment
+        public Knowledge Knowledge;
 
         // resources change rates
         public float FoodDecreaseRate;

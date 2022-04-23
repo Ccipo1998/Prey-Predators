@@ -7,7 +7,7 @@ namespace Assets.Resources
     {
         public Grass()
         {
-            Type = FoodType.Plant;
+            
         }
 
         // Use this for initialization

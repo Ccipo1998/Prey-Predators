@@ -2,6 +2,7 @@
 using UnityEngine;
 using Assets.Species;
 using Assets.GoalOrientedBehavior;
+using Assets.Behaviors;
 
 namespace Assets.Spawner
 {
@@ -14,14 +15,18 @@ namespace Assets.Spawner
             Zebra.GetComponent<Rigidbody>().transform.position = Vector3.zero + new Vector3(0.0f, 1.0f, 0.0f);
 
             // adding all the components
-            Zebra.AddComponent<Zebra>();
-            Zebra.AddComponent<GOB>();
+            //Zebra.AddComponent<Zebra>();
+            //Zebra.AddComponent<GOB>();
+            //Zebra.AddComponent<ZebraGOB>();
+            //Zebra.AddComponent<ZebraBehavior>();
 
+            
             for (int i = 1; i < 5; i++)
             {
                 GameObject zebraClone = Instantiate(Zebra);
                 zebraClone.GetComponent<Rigidbody>().transform.position = Vector3.zero + new Vector3((float)i * 2, 1.0f, 0.0f);
             }
+            
         }
 
         // Update is called once per frame

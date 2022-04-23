@@ -6,14 +6,15 @@ TagManager:
   tags:
   - Zebra
   - Lion
+  - Grass
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Targets
   - Water
   - UI
-  - 
+  - Obstacles
   - 
   - 
   - 

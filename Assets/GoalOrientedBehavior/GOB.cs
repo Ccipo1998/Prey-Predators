@@ -24,7 +24,7 @@ namespace Assets.GoalOrientedBehavior
 
         private void FixedUpdate()
         {
-            ChoosenGoal = ChooseGoal().Name;
+            ChoosenGoal = ChooseGoal().Name.ToString();
         }
 
         // simple selection
@@ -46,24 +46,12 @@ namespace Assets.GoalOrientedBehavior
         private List<Goal> GetGoals()
         {
             return new List<Goal> {
-                new Goal("Food", gameObject.GetComponent<Zebra>().Food),
-                new Goal("Water", gameObject.GetComponent<Zebra>().Water),
-                new Goal("Space", gameObject.GetComponent<Zebra>().Space),
-                new Goal("Sociality", gameObject.GetComponent<Zebra>().Sociality),
-                new Goal("Energy", gameObject.GetComponent<Zebra>().Energy)
+                new Goal(GoalName.Food, gameObject.GetComponent<Zebra>().Food),
+                new Goal(GoalName.Water, gameObject.GetComponent<Zebra>().Water),
+                new Goal(GoalName.Sociality, gameObject.GetComponent<Zebra>().Sociality),
+                new Goal(GoalName.Space, gameObject.GetComponent<Zebra>().Space),
+                new Goal(GoalName.Energy, gameObject.GetComponent<Zebra>().Energy)
             };
         }
-    }
-
-    public struct Goal
-    {
-        public Goal(string name, float value)
-        {
-            Name = name;
-            Value = value;
-        }
-
-        public string Name;
-        public float Value;
     }
 }
