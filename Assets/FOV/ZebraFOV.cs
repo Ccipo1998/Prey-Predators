@@ -26,7 +26,6 @@ namespace Assets.FOV
             TargetsMask = LayerMask.GetMask(new string[] { "Targets" });
         }
 
-        // Update is called once per frame
         void FixedUpdate()
         {
             FindVisible();
@@ -63,6 +62,7 @@ namespace Assets.FOV
         {
             // params to clear near objects of interest
             bool isFoodNear = false;
+            bool isWaterNear = false;
 
             Zebra currentAnimal = gameObject.GetComponent<Zebra>();
             Vector3 currentPosition = gameObject.GetComponent<Rigidbody>().position;
@@ -72,6 +72,7 @@ namespace Assets.FOV
                 GameObject seenObject = ObjectsInFOV[i];
                 float objectDistance = Vector3.Distance(currentPosition, seenObject.GetComponent<Rigidbody>().position);
 
+                // seen object is food
                 if (seenObject.GetComponent<Food>() != null)
                 {
                     // there is food in current FOV
@@ -83,17 +84,35 @@ namespace Assets.FOV
                         // position info in internal knowledge (for searching)
                         currentAnimal.Knowledge.LastFoundedFood = seenObject.GetComponent<Rigidbody>().transform;
 
-                        // gameobject info of actual food in current FOV, for actions on that
+                        // gameobject of actual food in current FOV, for actions on that
                         NearestFoodInFOV = seenObject;
                     }
                 }
-                //else if (seenObject.GetComponent<Water>() != null) // seen water position TODO
+                // seen object is water
+                else if (seenObject.GetComponent<Water>() != null)
+                {
+                    // there is water in current FOV
+                    isWaterNear = true;
+
+                    float lastWaterDistance = currentAnimal.Knowledge.LastFoundedWater != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedWater.position) : float.PositiveInfinity;
+                    if (objectDistance <= lastWaterDistance)
+                    {
+                        // position info in internal knowledge (for searching)
+                        currentAnimal.Knowledge.LastFoundedWater = seenObject.GetComponent<Rigidbody>().transform;
+
+                        // gameobject of actual food in current FOV, for actions on that
+                        NearestWaterInFOV = seenObject;
+                    }
+                }
                 // else if (seenObject.GetComponent<Lion>() != null) // seen predator position TODO
                 // else if (seenObject.GetComponent<Zebra>() != null) // seen similar position TODO
             }
 
+            // clear near objects
             if (!isFoodNear)
                 NearestFoodInFOV = null;
+            if (!isWaterNear)
+                NearestWaterInFOV = null;
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.AI;
 
 namespace Assets.Actions
 {
-    public class ZebraSearchFood : MonoBehaviour
+    public class ZebraSearchWater : MonoBehaviour
     {
 
         // Use this for initialization
@@ -20,17 +20,17 @@ namespace Assets.Actions
         {
             Knowledge currentKnowledge = gameObject.GetComponent<Zebra>().Knowledge;
 
-            // if there is a food source in current FOV
-            GameObject nearFood = gameObject.GetComponent<ZebraFOV>().NearestFoodInFOV;
-            if (nearFood != null)
+            // check if there is a water source in current FOV
+            GameObject nearWater = gameObject.GetComponent<ZebraFOV>().NearestWaterInFOV;
+            if (nearWater != null)
             {
-                //GoToFood();
+                //GoToWater();
             }
 
             // check if the animal knows already a position of a food source
-            else if (currentKnowledge.LastFoundedFood != null)
+            else if (currentKnowledge.LastFoundedWater != null)
             {
-                gameObject.GetComponent<NavMeshAgent>().destination = currentKnowledge.LastFoundedFood.position;
+                gameObject.GetComponent<NavMeshAgent>().destination = currentKnowledge.LastFoundedWater.position;
             }
         }
 

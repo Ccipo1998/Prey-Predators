@@ -5,6 +5,7 @@ using Assets.GoalOrientedBehavior;
 using UnityEngine.AI;
 using Assets.FOV;
 using Assets.Actions;
+using System.Collections.Generic;
 
 namespace Assets.Species
 {
@@ -43,45 +44,77 @@ namespace Assets.Species
                 Water--;
         }
 
+        // simple selection
+        public Goal ChooseBasicGoal()
+        {
+            List<Goal> goals = GetBasicGoals();
+
+            Goal choosen = goals[0];
+            for (int i = 1; i < goals.Count; i++)
+            {
+                if (goals[i].Value < choosen.Value)
+                    choosen = goals[i];
+            }
+
+            return choosen;
+        }
+
+        // current zebra needs
+        private List<Goal> GetBasicGoals()
+        {
+            return new List<Goal> {
+                new Goal(GoalName.Food, Food),
+                new Goal(GoalName.Water, Water),
+                new Goal(GoalName.Energy, Energy)
+            };
+        }
+
+        // Stay() function of the Survive state
         public void Survive()
         {
-            // get the next basic goal to survive
-            Goal nextGoal = gameObject.GetComponent<ZebraGOB>().ChooseBasicGoal();
+            // compute next basic goal to survive
+            Goal nextGoal = ChooseBasicGoal();
 
-            switch (nextGoal.Name)
-            {
-                case GoalName.Food:
-                    //gameObject.GetComponent<NavMeshAgent>().destination = GameObject.FindGameObjectWithTag("Grass").GetComponent<Rigidbody>().transform.position;
-                    //SearchFood();
-                    gameObject.GetComponent<ZebraSearchFood>().enabled = true;
-                    break;
+            // check if the current goal is changing and set the relative flag
+            if (nextGoal.Name != CurrentGoal.Name)
+                GoalChanged = true;
 
-                case GoalName.Water:
-                    break;
-
-                case GoalName.Energy:
-                    break;
-            }
+            // assign
+            CurrentGoal = nextGoal;
         }
 
-        /*
-        private void SearchFood()
+        // Stay() function of the Search state
+        public void Search()
         {
-            // check if there is a food source in current FOV
-            GameObject nearFood = gameObject.GetComponent<ZebraFOV>().NearestFoodInFOV;
-            if (nearFood != null)
+            // check if the current goal changed
+            if (GoalChanged)
             {
-                gameObject.GetComponent<NavMeshAgent>().ResetPath();
+                // disable all the previous actions (all because there is not memory of what the Zebra was doing before)
+                gameObject.GetComponent<ZebraSearchFood>().enabled = false;
+                gameObject.GetComponent<ZebraSearchWater>().enabled = false;
+                //gameObject.GetComponent<ZebraSearchPlaceToSleep>().enabled = false;
 
-                //GoToFood();
+                // enable searching actions basing on current goal
+                switch (CurrentGoal.Name)
+                {
+                    case GoalName.Food:
+                        gameObject.GetComponent<ZebraSearchFood>().enabled = true;
+                        break;
+
+                    case GoalName.Water:
+                        gameObject.GetComponent<ZebraSearchWater>().enabled = true;
+                        break;
+
+                    case GoalName.Energy:
+                        //gameObject.GetComponent<ZebraSearchPlaceToSleep>().enabled = true;
+                        break;
+                }
+
+                // flag resetted
+                GoalChanged = false;
             }
 
-            // check if the animal knows already a position of a food source
-            else if (Knowledge.LastFoundedFood != null)
-            {
-                gameObject.GetComponent<NavMeshAgent>().destination = Knowledge.LastFoundedFood;
-            }
+            // else there is nothing to do
         }
-        */
     }
 }

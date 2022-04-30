@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.GoalOrientedBehavior;
+using System.Collections;
 using UnityEngine;
 
 namespace Assets.Species
@@ -23,6 +24,11 @@ namespace Assets.Species
         // animals have a knowledge of the surrounding environment
         public Knowledge Knowledge;
 
+        // animals have a current goal to satisfy
+        public Goal CurrentGoal;
+        // flag for evidency of change of current goal
+        public bool GoalChanged;
+
         // resources change rates
         public float FoodDecreaseRate;
         public float WaterDecreaseRate;
@@ -35,6 +41,10 @@ namespace Assets.Species
             Space = 50;
             Sociality = 50;
             Energy = 100;
+
+            // starting goal
+            CurrentGoal = new Goal(GoalName.Food, 50);
+            GoalChanged = true;
         }
     }
 
