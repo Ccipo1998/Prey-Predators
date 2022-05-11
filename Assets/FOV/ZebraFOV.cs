@@ -16,9 +16,11 @@ namespace Assets.FOV
         // all the objects that the animal can see currently
         public List<GameObject> ObjectsInFOV = new List<GameObject>();
 
+        /* -> moved to zebraeat behavior
         // objects of interest
         public GameObject NearestFoodInFOV;
         public GameObject NearestWaterInFOV;
+        */
 
         // Use this for initialization
         void Start()
@@ -57,12 +59,16 @@ namespace Assets.FOV
             }
         }
 
+        // TODO: l'ultima posizione di una risorsa conosciuta diventa null quando la si visita e non c'è più la risorsa disponibile
+        // TODO: si aggiunge la posizione di una risorsa alla conoscenza solo quando si riesce a consumare quella risorsa, non solo quando la si vede
         // add positions to internal knowledge and objects of interest in current FOV
         public void AddKnowledge()
         {
+            /*
             // params to clear near objects of interest
             bool isFoodNear = false;
             bool isWaterNear = false;
+            */
 
             Zebra currentAnimal = gameObject.GetComponent<Zebra>();
             Vector3 currentPosition = gameObject.GetComponent<Rigidbody>().position;
@@ -76,7 +82,7 @@ namespace Assets.FOV
                 if (seenObject.GetComponent<Food>() != null)
                 {
                     // there is food in current FOV
-                    isFoodNear = true;
+                    //isFoodNear = true;
 
                     float lastFoodDistance = currentAnimal.Knowledge.LastFoundedFood != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedFood.position) : float.PositiveInfinity;
                     if (objectDistance <= lastFoodDistance)
@@ -85,14 +91,14 @@ namespace Assets.FOV
                         currentAnimal.Knowledge.LastFoundedFood = seenObject.GetComponent<Rigidbody>().transform;
 
                         // gameobject of actual food in current FOV, for actions on that
-                        NearestFoodInFOV = seenObject;
+                        //NearestFoodInFOV = seenObject;
                     }
                 }
                 // seen object is water
                 else if (seenObject.GetComponent<Water>() != null)
                 {
                     // there is water in current FOV
-                    isWaterNear = true;
+                    //isWaterNear = true;
 
                     float lastWaterDistance = currentAnimal.Knowledge.LastFoundedWater != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedWater.position) : float.PositiveInfinity;
                     if (objectDistance <= lastWaterDistance)
@@ -101,18 +107,62 @@ namespace Assets.FOV
                         currentAnimal.Knowledge.LastFoundedWater = seenObject.GetComponent<Rigidbody>().transform;
 
                         // gameobject of actual food in current FOV, for actions on that
-                        NearestWaterInFOV = seenObject;
+                        //NearestWaterInFOV = seenObject;
                     }
                 }
                 // else if (seenObject.GetComponent<Lion>() != null) // seen predator position TODO
                 // else if (seenObject.GetComponent<Zebra>() != null) // seen similar position TODO
             }
 
+            /*
             // clear near objects
             if (!isFoodNear)
                 NearestFoodInFOV = null;
             if (!isWaterNear)
                 NearestWaterInFOV = null;
+            */
+        }
+
+        // get the nearer food object in FOV with at least a free spot
+        public GameObject GetNearerFreeFood()
+        {
+            GameObject nearerFreeFood = null;
+            float nearerDistance = float.PositiveInfinity;
+
+            // check current FOV for food
+            for (int i = 0; i < ObjectsInFOV.Count; i++)
+            {
+                GameObject seenObject = ObjectsInFOV[i];
+                float seenObjectDistance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, seenObject.GetComponent<Rigidbody>().position);
+                if (seenObject.GetComponent<Food>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Food>().HasFreeSpot())
+                {
+                    nearerFreeFood = seenObject;
+                    nearerDistance = seenObjectDistance;
+                }
+            }
+
+            return nearerFreeFood;
+        }
+
+        // get the nearer food object in FOV with at least a free spot
+        public GameObject GetNearerFreeWater()
+        {
+            GameObject nearerFreeWater = null;
+            float nearerDistance = float.PositiveInfinity;
+
+            // check current FOV for food
+            for (int i = 0; i < ObjectsInFOV.Count; i++)
+            {
+                GameObject seenObject = ObjectsInFOV[i];
+                float seenObjectDistance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, seenObject.GetComponent<Rigidbody>().position);
+                if (seenObject.GetComponent<Water>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Water>().HasFreeSpot())
+                {
+                    nearerFreeWater = seenObject;
+                    nearerDistance = seenObjectDistance;
+                }
+            }
+
+            return nearerFreeWater;
         }
     }
 }

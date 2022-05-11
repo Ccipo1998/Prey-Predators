@@ -1,4 +1,5 @@
 ﻿using Assets.FOV;
+using Assets.Resources;
 using Assets.Species;
 using System.Collections;
 using UnityEngine;
@@ -8,29 +9,110 @@ namespace Assets.Actions
 {
     public class ZebraSearchFood : MonoBehaviour
     {
+        // static components
+        private Rigidbody CurrentRigidBody;
+        private NavMeshAgent CurrentNavMeshAgent;
+        private Knowledge CurrentKnowledge;
+        private ZebraFOV CurrentZebraFOV;
+
+        // searching info
+        public GameObject CurrentNearerFreeFood;
+        public ResourceSpot CurrentNearerFreeSpot;
+        public SearchingStatus Status;
+
+        // note: START AFTER ENABLE
 
         // Use this for initialization
         void Start()
         {
-            this.enabled = false;
+            // get static components
+            CurrentRigidBody = gameObject.GetComponent<Rigidbody>();
+            CurrentNavMeshAgent = gameObject.GetComponent<NavMeshAgent>();
+            CurrentKnowledge = gameObject.GetComponent<Zebra>().Knowledge;
+            CurrentZebraFOV = gameObject.GetComponent<ZebraFOV>();
+            Status = SearchingStatus.Searching;
+
+            // clear previous path
+            CurrentNavMeshAgent.ResetPath();
         }
 
-        // Update is called once per frame
-        void FixedUpdate()
+        private void OnEnable()
         {
-            Knowledge currentKnowledge = gameObject.GetComponent<Zebra>().Knowledge;
 
-            // if there is a food source in current FOV
-            GameObject nearFood = gameObject.GetComponent<ZebraFOV>().NearestFoodInFOV;
-            if (nearFood != null)
+        }
+
+        void Update()
+        {
+            Vector3 currentPosition = CurrentRigidBody.position;
+
+            // check if the animal arrived to the spot
+            if (Status == SearchingStatus.Arrived)
             {
-                //GoToFood();
+                CurrentNavMeshAgent.ResetPath();
+                CurrentNavMeshAgent.isStopped = true;
+                CurrentNavMeshAgent.velocity = Vector3.zero;
+                CurrentNavMeshAgent.angularSpeed = 0f;
+                CurrentRigidBody.velocity = Vector3.zero;
+                CurrentRigidBody.angularVelocity = Vector3.zero;
+                CurrentRigidBody.transform.position = CurrentNearerFreeSpot.Position;
+                CurrentRigidBody.transform.forward = Vector3.Normalize(CurrentNearerFreeFood.GetComponent<Rigidbody>().position - CurrentRigidBody.transform.position);
+                return;
             }
 
-            // check if the animal knows already a position of a food source
-            else if (currentKnowledge.LastFoundedFood != null)
+            // check if the animal can request a spot
+            if (CurrentNearerFreeSpot != null && Vector3.Distance(currentPosition, CurrentNearerFreeSpot.Position) < (CurrentNavMeshAgent.stoppingDistance * 2) && CurrentNearerFreeSpot.IsFree)
             {
-                gameObject.GetComponent<NavMeshAgent>().destination = currentKnowledge.LastFoundedFood.position;
+                // in proximity of the free spot -> in the queue for the spot, if not already
+                if (Status == SearchingStatus.Searching)
+                {
+                    CurrentNearerFreeSpot.ToQueue(gameObject);
+                    Status = SearchingStatus.InQueue;
+                }
+                else if (Status == SearchingStatus.InQueue)
+                {
+                    GameObject assigned = CurrentNearerFreeSpot.AssignSpot();
+                    if (assigned == gameObject)
+                    {
+                        CurrentNearerFreeSpot.ClearQueue();
+                        CurrentNearerFreeSpot.IsFree = false;
+                        Status = SearchingStatus.Arrived;
+                    }
+                }
+            }
+            // else constantly check for found food in FOV or for failing the search basing on knowledge
+            else
+            {
+                // reset status
+                Status = SearchingStatus.Searching;
+
+                // check food and spot in FOV
+                GameObject nearerFreeFood = CurrentZebraFOV.GetNearerFreeFood();
+                if (nearerFreeFood != null)
+                {
+                    ResourceSpot nearerFreeSpot = nearerFreeFood.GetComponent<Food>().GetNearerFreeSpot(currentPosition);
+                    // check if the spot changed
+                    if (nearerFreeSpot != CurrentNearerFreeSpot)
+                    {
+                        CurrentNearerFreeFood = nearerFreeFood;
+                        CurrentNearerFreeSpot = nearerFreeSpot;
+                        CurrentNavMeshAgent.destination = CurrentNearerFreeSpot.Position;
+                        CurrentNavMeshAgent.isStopped = false;
+                    }
+                }
+                // else search basing on knowledge
+                else if (CurrentKnowledge.LastFoundedFood != null)
+                {
+                    // clear current food/spot
+                    CurrentNearerFreeFood = null;
+                    CurrentNearerFreeSpot = null;
+
+                    CurrentNavMeshAgent.destination = CurrentKnowledge.LastFoundedFood.position;
+                }
+                // else wandering
+                else
+                {
+                    CurrentNavMeshAgent.destination = new Vector3(10.0f, 0.0f, 0.0f);
+                }
             }
         }
 
@@ -38,9 +120,13 @@ namespace Assets.Actions
         private void OnDisable()
         {
             // disable current nav mesh
-            NavMeshAgent currentAgent = gameObject.GetComponent<NavMeshAgent>();
-            if (currentAgent.hasPath)
-                currentAgent.ResetPath();
+            if (CurrentNavMeshAgent.hasPath)
+                CurrentNavMeshAgent.ResetPath();
         }
+    }
+
+    public enum SearchingStatus
+    {
+        Searching, InQueue, Arrived
     }
 }

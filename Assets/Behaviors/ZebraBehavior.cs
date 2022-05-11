@@ -2,6 +2,7 @@
 using UnityEngine;
 using Assets.HierarchicalStateMachine;
 using Assets.Species;
+using Assets.Actions;
 
 namespace Assets.Behaviors
 {
@@ -30,8 +31,17 @@ namespace Assets.Behaviors
             // state actions
             Survive.StayActions.Add(gameObject.GetComponent<Zebra>().Survive);
             Search.StayActions.Add(gameObject.GetComponent <Zebra>().Search);
+            Search.ExitActions.Add(gameObject.GetComponent<Zebra>().SearchExit);
+            SatisfyNeed.EnterActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedEnter);
+            SatisfyNeed.ExitActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedExit);
 
             // transitions
+            HSMtransition CanSatisfyTran = new HSMtransition("Can satisfy", CanSatisfy);
+            HSMtransition NewNeedTran = new HSMtransition("New need", NewNeed);
+
+            // transitions links
+            Search.AddTransition(CanSatisfyTran, SatisfyNeed);
+            SatisfyNeed.AddTransition(NewNeedTran, Search);
 
             // parents
             Welfare.AddParent(Live);
@@ -57,5 +67,37 @@ namespace Assets.Behaviors
                 yield return new WaitForSeconds(ReactionTime);
             }
         }
+
+        #region CONDITIONS
+
+        // check if the animal can satisfy current need (if he is in the spot)
+        private bool CanSatisfy()
+        {
+            // get current goal
+            switch (gameObject.GetComponent<Zebra>().CurrentGoal.Name)
+            {
+                // food case
+                case GoalOrientedBehavior.GoalName.Food:
+                    if (gameObject.GetComponent<ZebraSearchFood>().Status == SearchingStatus.Arrived)
+                        return true;
+                    break;
+
+                // water case
+                case GoalOrientedBehavior.GoalName.Water:
+                    if (gameObject.GetComponent<ZebraSearchWater>().Status == SearchingStatus.Arrived)
+                        return true;
+                    break;
+            }
+
+            return false;
+        }
+
+        // check if there is a new more urgent need to satisfy
+        private bool NewNeed()
+        {
+            return gameObject.GetComponent<Zebra>().GoalChanged;
+        }
+
+        #endregion CONDITIONS
     }
 }

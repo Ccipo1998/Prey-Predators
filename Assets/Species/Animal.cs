@@ -35,9 +35,9 @@ namespace Assets.Species
 
         public Animal()
         {
-            // starting values: 100%
+            // starting values
             Food = 50;
-            Water = 50;
+            Water = 100;
             Space = 50;
             Sociality = 50;
             Energy = 100;
@@ -45,6 +45,16 @@ namespace Assets.Species
             // starting goal
             CurrentGoal = new Goal(GoalName.Food, 50);
             GoalChanged = true;
+        }
+
+        public void Eat(int quantity)
+        {
+            Food += quantity;
+        }
+
+        public void Drink(int quantity)
+        {
+            Water += quantity;
         }
     }
 

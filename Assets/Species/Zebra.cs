@@ -116,5 +116,39 @@ namespace Assets.Species
 
             // else there is nothing to do
         }
+
+        // Enter() function of SatisfyNeed state
+        public void SatisfyNeedEnter()
+        {
+            // get current goal to satisfy
+            switch (CurrentGoal.Name)
+            {
+                // food case
+                case GoalName.Food:
+                    gameObject.GetComponent<ZebraEat>().enabled = true;
+                    break;
+
+                // water case
+                case GoalName.Water:
+                    gameObject.GetComponent<ZebraDrink>().enabled = true;
+                    break;
+            }
+        }
+
+        // Exit() function of SatisfyNeed state
+        public void SatisfyNeedExit()
+        {
+            // disable all the satisfy actions
+            gameObject.GetComponent<ZebraEat>().enabled = false;
+            gameObject.GetComponent<ZebraDrink>().enabled = false;
+        }
+
+        // Exit() function of Search state
+        public void SearchExit()
+        {
+            // disabling searching behaviors
+            gameObject.GetComponent<ZebraSearchFood>().enabled = false;
+            gameObject.GetComponent<ZebraSearchWater>().enabled = false;
+        }
     }
 }
