@@ -28,7 +28,7 @@ namespace Assets.FOV
             TargetsMask = LayerMask.GetMask(new string[] { "Targets" });
         }
 
-        void FixedUpdate()
+        void Update()
         {
             FindVisible();
             AddKnowledge();
@@ -163,6 +163,20 @@ namespace Assets.FOV
             }
 
             return nearerFreeWater;
+        }
+
+        // get near Zebras
+        public List<GameObject> GetZebrasInFOV()
+        {
+            List<GameObject> zebras = new List<GameObject>();
+            
+            for (int i = 0; i < ObjectsInFOV.Count; i++)
+            {
+                if (ObjectsInFOV[i].GetComponent<Zebra>() != null)
+                    zebras.Add(ObjectsInFOV[i]);
+            }
+
+            return zebras;
         }
     }
 }

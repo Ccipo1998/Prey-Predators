@@ -15,19 +15,29 @@ namespace Assets.Actions
         public ResourceSpot AssignedSpot;
         // eating rate
         public float EatVelocity = 1.0f;
+        // status
+        public EatingStatus Status;
 
         // static components
         private Coroutine coroutine;
+        private Zebra CurrentZebra;
+
+        // food target value for eating duration
+        private int FoodTarget = 0;
 
         // Use this for initialization
         void Start()
         {
-
+            
         }
 
         // Called on enabling
         private void OnEnable()
         {
+            Status = EatingStatus.Eating;
+            // static components init
+            CurrentZebra = gameObject.GetComponent<Zebra>();
+
             // get food info when enabled
             FoodToEat = gameObject.GetComponent<ZebraSearchFood>().CurrentNearerFreeFood;
             AssignedSpot = gameObject.GetComponent<ZebraSearchFood>().CurrentNearerFreeSpot;
@@ -38,12 +48,17 @@ namespace Assets.Actions
 
         private IEnumerator EatAndConsume()
         {
-            while (true)
+            while (CurrentZebra.Food < FoodTarget)
             {
-                FoodToEat.GetComponent<Food>().Consume(1);
-                gameObject.GetComponent<Zebra>().Eat(1);
-                yield return new WaitForSeconds(1 / EatVelocity);
+                for (int i = 0; i < EatVelocity; i++)
+                {
+                    FoodToEat.GetComponent<Food>().Consume(1);
+                    CurrentZebra.Eat(1);
+                }
+                yield return new WaitForSeconds(1);
             }
+            
+            Status = EatingStatus.Done;
         }
 
         // Called on disabling
@@ -53,6 +68,18 @@ namespace Assets.Actions
             StopCoroutine(coroutine);
             // free the spot after a while -> so the animal moved away a little from the spot position TODO
             AssignedSpot.Free();
+            // standard exit status
+            Status = EatingStatus.Done;
         }
+
+        public void SetFoodTarget(int foodTarget)
+        {
+            FoodTarget = foodTarget;
+        }
+    }
+
+    public enum EatingStatus
+    {
+        Eating, Done
     }
 }

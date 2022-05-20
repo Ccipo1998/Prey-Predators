@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 423606106}
   - component: {fileID: 423606110}
   - component: {fileID: 423606111}
+  - component: {fileID: 423606112}
   m_Layer: 3
   m_Name: Zebra
   m_TagString: Zebra
@@ -221,7 +222,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423606098}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.45, y: 0.64, z: -3.82}
+  m_LocalPosition: {x: -20.21, y: 0.64, z: -1.18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -322,12 +323,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Food: 50
-  Water: 65
+  Water: 50
   Space: 50
   Sociality: 50
   Energy: 100
   Type: 1
-  GoalChanged: 1
   FoodDecreaseRate: 5
   WaterDecreaseRate: 3
 --- !u!114 &423606109
@@ -358,6 +358,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FoodToEat: {fileID: 0}
   EatVelocity: 1
+  Status: 0
 --- !u!114 &423606111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -372,6 +373,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaterToDrink: {fileID: 0}
   DrinkVelocity: 2
+  Status: 0
+--- !u!114 &423606112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423606098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 461ff09134ae3a344bc725ee790ab830, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &467940601
 GameObject:
   m_ObjectHideFlags: 0
@@ -658,6 +672,7 @@ GameObject:
   - component: {fileID: 1282232560}
   - component: {fileID: 1282232559}
   - component: {fileID: 1282232558}
+  - component: {fileID: 1282232564}
   m_Layer: 3
   m_Name: Water
   m_TagString: Untagged
@@ -772,6 +787,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!208 &1282232564
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1282232557}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1852025617
 GameObject:
   m_ObjectHideFlags: 0
@@ -801,7 +832,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f1d57286f0a9b4ebd5fbe832c01c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnNumber: 1
+  SpawnNumber: 2
 --- !u!4 &1852025619
 Transform:
   m_ObjectHideFlags: 0
@@ -830,6 +861,7 @@ GameObject:
   - component: {fileID: 2016035079}
   - component: {fileID: 2016035083}
   - component: {fileID: 2016035084}
+  - component: {fileID: 2016035085}
   m_Layer: 3
   m_Name: Grass
   m_TagString: Grass
@@ -944,3 +976,19 @@ MonoBehaviour:
   Quantity: 50
   SpotNumber: 4
   SpotDistance: 2
+--- !u!208 &2016035085
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2016035078}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.5, y: 0.5, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5

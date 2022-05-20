@@ -13,19 +13,29 @@ namespace Assets.Actions
         public ResourceSpot AssignedSpot;
         // drink rate
         public float DrinkVelocity = 1.0f;
+        // status
+        public DrinkingStatus Status;
 
         // static components
         private Coroutine coroutine;
 
+        // water target value for drinking duration
+        private int WaterTarget = 0;
+        private Zebra CurrentZebra;
+
         // Use this for initialization
         void Start()
         {
-
+            
         }
 
         // Called on enabling
         private void OnEnable()
         {
+            Status = DrinkingStatus.Drinking;
+            // static components init
+            CurrentZebra = gameObject.GetComponent<Zebra>();
+
             // get food info when enabled
             WaterToDrink = gameObject.GetComponent<ZebraSearchWater>().CurrentNearerFreeWater;
             AssignedSpot = gameObject.GetComponent<ZebraSearchWater>().CurrentNearerFreeSpot;
@@ -36,12 +46,17 @@ namespace Assets.Actions
 
         private IEnumerator DrinkAndConsume()
         {
-            while (true)
+            while (CurrentZebra.Water < WaterTarget)
             {
-                WaterToDrink.GetComponent<Water>().Consume(1);
-                gameObject.GetComponent<Zebra>().Drink(1);
-                yield return new WaitForSeconds(1 / DrinkVelocity);
+                for (int i = 0; i < DrinkVelocity; i++)
+                {
+                    WaterToDrink.GetComponent<Water>().Consume(1);
+                    gameObject.GetComponent<Zebra>().Drink(1);
+                }
+                yield return new WaitForSeconds(1);
             }
+
+            Status = DrinkingStatus.Done;
         }
 
         // Called on disabling
@@ -51,6 +66,18 @@ namespace Assets.Actions
             StopCoroutine(coroutine);
             // free the spot after a while -> so the animal moved away a little from the spot position TODO
             AssignedSpot.Free();
+            // standard exit status
+            Status = DrinkingStatus.Done;
         }
+
+        public void SetWaterTarget(int waterTarget)
+        {
+            WaterTarget = waterTarget;
+        }
+    }
+
+    public enum DrinkingStatus
+    {
+        Drinking, Done
     }
 }

@@ -3,6 +3,7 @@ using UnityEngine;
 using Assets.HierarchicalStateMachine;
 using Assets.Species;
 using Assets.Actions;
+using Assets.GoalOrientedBehavior;
 
 namespace Assets.Behaviors
 {
@@ -29,19 +30,23 @@ namespace Assets.Behaviors
             HSM Welfare = new HSM("Welfare", Happiness, 2);
 
             // state actions
-            Survive.StayActions.Add(gameObject.GetComponent<Zebra>().Survive);
+            //Survive.StayActions.Add(gameObject.GetComponent<Zebra>().Survive);
             Search.StayActions.Add(gameObject.GetComponent <Zebra>().Search);
             Search.ExitActions.Add(gameObject.GetComponent<Zebra>().SearchExit);
+            Search.EnterActions.Add(gameObject.GetComponent<Zebra>().SearchEnter);
             SatisfyNeed.EnterActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedEnter);
             SatisfyNeed.ExitActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedExit);
+            //Happiness.StayActions.Add(gameObject.GetComponent<Zebra>().Happiness);
 
             // transitions
             HSMtransition CanSatisfyTran = new HSMtransition("Can satisfy", CanSatisfy);
-            HSMtransition NewNeedTran = new HSMtransition("New need", NewNeed);
+            HSMtransition DoneTran = new HSMtransition("Done", Done);
+            //HSMtransition HighPrimaryNeedsLevelsTran = new HSMtransition("High primary needs levels", HighPrimaryNeedLevels);
 
             // transitions links
             Search.AddTransition(CanSatisfyTran, SatisfyNeed);
-            SatisfyNeed.AddTransition(NewNeedTran, Search);
+            SatisfyNeed.AddTransition(DoneTran, Search);
+            //Survive.AddTransition(HighPrimaryNeedsLevelsTran, Welfare);
 
             // parents
             Welfare.AddParent(Live);
@@ -73,18 +78,21 @@ namespace Assets.Behaviors
         // check if the animal can satisfy current need (if he is in the spot)
         private bool CanSatisfy()
         {
+            if (gameObject.GetComponent<Zebra>().CurrentGoal == null)
+                return false;
+
             // get current goal
             switch (gameObject.GetComponent<Zebra>().CurrentGoal.Name)
             {
                 // food case
-                case GoalOrientedBehavior.GoalName.Food:
-                    if (gameObject.GetComponent<ZebraSearchFood>().Status == SearchingStatus.Arrived)
+                case GoalName.Food:
+                    if (gameObject.GetComponent<ZebraSearchFood>().Status == SearchingStatus.Arrived && gameObject.GetComponent<ZebraSearchFood>().IsInPosition())
                         return true;
                     break;
 
                 // water case
-                case GoalOrientedBehavior.GoalName.Water:
-                    if (gameObject.GetComponent<ZebraSearchWater>().Status == SearchingStatus.Arrived)
+                case GoalName.Water:
+                    if (gameObject.GetComponent<ZebraSearchWater>().Status == SearchingStatus.Arrived && gameObject.GetComponent<ZebraSearchWater>().IsInPosition())
                         return true;
                     break;
             }
@@ -93,9 +101,41 @@ namespace Assets.Behaviors
         }
 
         // check if there is a new more urgent need to satisfy
-        private bool NewNeed()
+        private bool Done()
         {
-            return gameObject.GetComponent<Zebra>().GoalChanged;
+            Goal currentGoal = gameObject.GetComponent<Zebra>().CurrentGoal;
+
+            bool isDone = false;
+
+            switch (currentGoal.Name)
+            {
+                case GoalName.Food:
+                    if (gameObject.GetComponent<ZebraEat>().Status == EatingStatus.Done)
+                        isDone = true;
+                    break;
+
+                case GoalName.Water:
+                    if (gameObject.GetComponent<ZebraDrink>().Status == DrinkingStatus.Done)
+                        isDone = true;
+                    break;
+            }
+
+            return isDone;
+
+            //return gameObject.GetComponent<Zebra>().GoalChanged;
+        }
+
+        // check if current primary needs have high values
+        private bool HighPrimaryNeedLevels()
+        {
+            // TODO: add energy
+            int food = gameObject.GetComponent<Zebra>().Food;
+            int water = gameObject.GetComponent<Zebra>().Water;
+
+            if (food > 80 && water > 80)
+                return true;
+
+            return false;
         }
 
         #endregion CONDITIONS

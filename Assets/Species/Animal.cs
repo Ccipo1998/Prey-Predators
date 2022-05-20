@@ -26,8 +26,6 @@ namespace Assets.Species
 
         // animals have a current goal to satisfy
         public Goal CurrentGoal;
-        // flag for evidency of change of current goal
-        public bool GoalChanged;
 
         // resources change rates
         public float FoodDecreaseRate;
@@ -41,10 +39,6 @@ namespace Assets.Species
             Space = 50;
             Sociality = 50;
             Energy = 100;
-
-            // starting goal
-            CurrentGoal = new Goal(GoalName.Food, 50);
-            GoalChanged = true;
         }
 
         public void Eat(int quantity)
