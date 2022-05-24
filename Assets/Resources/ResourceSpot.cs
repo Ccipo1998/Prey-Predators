@@ -42,7 +42,7 @@ namespace Assets.Resources
             float distance = float.PositiveInfinity;
             for (int i = 0; i < Queue.Count; i++)
             {
-                float dist = Vector3.Distance(Position, Queue[i].GetComponent<Rigidbody>().position);
+                float dist = Vector3.Distance(Position, Queue[i].transform.position);
                 if (dist < distance)
                 {
                     distance = dist;

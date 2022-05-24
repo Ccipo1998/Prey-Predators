@@ -11,13 +11,11 @@ namespace Assets.Actions
     {
 
         // static components
-        private Rigidbody CurrentRigidBody;
         private NavMeshAgent CurrentNavMeshAgent;
         private Knowledge CurrentKnowledge;
         private ZebraFOV CurrentZebraFOV;
 
         private bool InQueue = false;
-        private bool Positioned = false;
 
         // searching info
         public GameObject CurrentNearerFreeWater;
@@ -28,7 +26,6 @@ namespace Assets.Actions
         void Start()
         {
             // get static components
-            CurrentRigidBody = gameObject.GetComponent<Rigidbody>();
             CurrentNavMeshAgent = gameObject.GetComponent<NavMeshAgent>();
             CurrentKnowledge = gameObject.GetComponent<Zebra>().Knowledge;
             CurrentZebraFOV = gameObject.GetComponent<ZebraFOV>();
@@ -45,15 +42,16 @@ namespace Assets.Actions
 
         void Update()
         {
-            Vector3 currentPosition = CurrentRigidBody.position;
+            Vector3 currentPosition = transform.position;
 
             // check if the animal arrived to the spot
             if (Status == SearchingStatus.Arrived)
             {
                 //CurrentNavMeshAgent.ResetPath();
 
-                if (CurrentNavMeshAgent.velocity == Vector3.zero)
-                    Positioned = true;
+                //Positioned = true;
+                //transform.position = CurrentNearerFreeSpot.Position;
+                //transform.forward = Vector3.Normalize(CurrentNearerFreeWater.transform.position - transform.position);
 
                 //CurrentNavMeshAgent.isStopped = true;
                 //CurrentNavMeshAgent.velocity = Vector3.zero;
@@ -100,6 +98,9 @@ namespace Assets.Actions
                         CurrentNearerFreeSpot.ClearQueue();
                         CurrentNearerFreeSpot.IsFree = false;
                         Status = SearchingStatus.Arrived;
+
+                        transform.position = CurrentNearerFreeSpot.Position;
+                        transform.forward = Vector3.Normalize(CurrentNearerFreeWater.transform.position - transform.position);
                     }
                 }
             }
@@ -150,15 +151,9 @@ namespace Assets.Actions
             // clear status and parameters
             Status = SearchingStatus.Searching;
             InQueue = false;
-            Positioned = false;
             // disable current nav mesh
             if (CurrentNavMeshAgent.hasPath)
                 CurrentNavMeshAgent.ResetPath();
-        }
-
-        public bool IsInPosition()
-        {
-            return Positioned;
         }
     }
 }

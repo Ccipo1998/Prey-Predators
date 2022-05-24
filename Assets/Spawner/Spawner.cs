@@ -26,7 +26,7 @@ namespace Assets.Spawner
             for (int i = 1; i < SpawnNumber; i++)
             {
                 GameObject zebraClone = Instantiate(Zebra);
-                zebraClone.GetComponent<Rigidbody>().transform.position = Zebra.GetComponent<Rigidbody>().transform.position + new Vector3((float)i * 2, 1.0f, 0.0f);
+                zebraClone.transform.position = Zebra.transform.position + new Vector3((float)i * 2, 1.0f, 0.0f);
             }
             
         }

@@ -40,7 +40,7 @@ namespace Assets.FOV
             // clear previous
             ObjectsInFOV.Clear();
 
-            Vector3 currentPosition = gameObject.GetComponent<Rigidbody>().position;
+            Vector3 currentPosition = transform.position;
             Collider currentCollider = gameObject.GetComponent<Collider>();
 
             // find objects in current FOV
@@ -71,12 +71,12 @@ namespace Assets.FOV
             */
 
             Zebra currentAnimal = gameObject.GetComponent<Zebra>();
-            Vector3 currentPosition = gameObject.GetComponent<Rigidbody>().position;
+            Vector3 currentPosition = transform.position;
 
             for (int i = 0; i < ObjectsInFOV.Count; i++)
             {
                 GameObject seenObject = ObjectsInFOV[i];
-                float objectDistance = Vector3.Distance(currentPosition, seenObject.GetComponent<Rigidbody>().position);
+                float objectDistance = Vector3.Distance(currentPosition, seenObject.transform.position);
 
                 // seen object is food
                 if (seenObject.GetComponent<Food>() != null)
@@ -88,7 +88,7 @@ namespace Assets.FOV
                     if (objectDistance <= lastFoodDistance)
                     {
                         // position info in internal knowledge (for searching)
-                        currentAnimal.Knowledge.LastFoundedFood = seenObject.GetComponent<Rigidbody>().transform;
+                        currentAnimal.Knowledge.LastFoundedFood = seenObject.transform.transform;
 
                         // gameobject of actual food in current FOV, for actions on that
                         //NearestFoodInFOV = seenObject;
@@ -104,7 +104,7 @@ namespace Assets.FOV
                     if (objectDistance <= lastWaterDistance)
                     {
                         // position info in internal knowledge (for searching)
-                        currentAnimal.Knowledge.LastFoundedWater = seenObject.GetComponent<Rigidbody>().transform;
+                        currentAnimal.Knowledge.LastFoundedWater = seenObject.transform.transform;
 
                         // gameobject of actual food in current FOV, for actions on that
                         //NearestWaterInFOV = seenObject;
@@ -133,7 +133,7 @@ namespace Assets.FOV
             for (int i = 0; i < ObjectsInFOV.Count; i++)
             {
                 GameObject seenObject = ObjectsInFOV[i];
-                float seenObjectDistance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, seenObject.GetComponent<Rigidbody>().position);
+                float seenObjectDistance = Vector3.Distance(gameObject.transform.position, seenObject.transform.position);
                 if (seenObject.GetComponent<Food>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Food>().HasFreeSpot())
                 {
                     nearerFreeFood = seenObject;
@@ -154,7 +154,7 @@ namespace Assets.FOV
             for (int i = 0; i < ObjectsInFOV.Count; i++)
             {
                 GameObject seenObject = ObjectsInFOV[i];
-                float seenObjectDistance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, seenObject.GetComponent<Rigidbody>().position);
+                float seenObjectDistance = Vector3.Distance(gameObject.transform.position, seenObject.transform.position);
                 if (seenObject.GetComponent<Water>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Water>().HasFreeSpot())
                 {
                     nearerFreeWater = seenObject;

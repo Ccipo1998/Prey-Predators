@@ -68,7 +68,7 @@ namespace Assets.Species
                 // calculate path distance
                 NavMeshPath navMeshPath = new NavMeshPath();
                 gameObject.GetComponent<NavMeshAgent>().CalculatePath(Knowledge.LastFoundedFood.position, navMeshPath);
-                float distance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, navMeshPath.corners[0]);
+                float distance = Vector3.Distance(gameObject.transform.position, navMeshPath.corners[0]);
                 for (int i = 0; i < navMeshPath.corners.Length - 1; ++i)
                 {
                     distance += Vector3.Distance(navMeshPath.corners[i], navMeshPath.corners[i + 1]);
@@ -93,7 +93,7 @@ namespace Assets.Species
                 // calculate path distance
                 NavMeshPath navMeshPath = new NavMeshPath();
                 gameObject.GetComponent<NavMeshAgent>().CalculatePath(Knowledge.LastFoundedWater.position, navMeshPath);
-                float distance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, navMeshPath.corners[0]);
+                float distance = Vector3.Distance(gameObject.transform.position, navMeshPath.corners[0]);
                 for (int i = 0; i < navMeshPath.corners.Length - 1; ++i)
                 {
                     distance += Vector3.Distance(navMeshPath.corners[i], navMeshPath.corners[i + 1]);
@@ -141,8 +141,8 @@ namespace Assets.Species
                     {
                         // calculate path distance
                         NavMeshPath navMeshPath = new NavMeshPath();
-                        gameObject.GetComponent<NavMeshAgent>().CalculatePath(nearerFreeFood.GetComponent<Rigidbody>().position, navMeshPath);
-                        distance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, navMeshPath.corners[0]);
+                        gameObject.GetComponent<NavMeshAgent>().CalculatePath(nearerFreeFood.transform.position, navMeshPath);
+                        distance = Vector3.Distance(gameObject.transform.position, navMeshPath.corners[0]);
                         for (int i = 0; i < navMeshPath.corners.Length - 1; ++i)
                         {
                             distance += Vector3.Distance(navMeshPath.corners[i], navMeshPath.corners[i + 1]);
@@ -163,8 +163,8 @@ namespace Assets.Species
                     {
                         // calculate path distance
                         NavMeshPath navMeshPath = new NavMeshPath();
-                        gameObject.GetComponent<NavMeshAgent>().CalculatePath(nearerFreeWater.GetComponent<Rigidbody>().position, navMeshPath);
-                        distance = Vector3.Distance(gameObject.GetComponent<Rigidbody>().position, navMeshPath.corners[0]);
+                        gameObject.GetComponent<NavMeshAgent>().CalculatePath(nearerFreeWater.transform.position, navMeshPath);
+                        distance = Vector3.Distance(gameObject.transform.position, navMeshPath.corners[0]);
                         for (int i = 0; i < navMeshPath.corners.Length - 1; ++i)
                         {
                             distance += Vector3.Distance(navMeshPath.corners[i], navMeshPath.corners[i + 1]);

@@ -25,7 +25,7 @@ namespace Assets.Resources
         private void Start()
         {
             // create the list of positions where animals can go to eat
-            Transform currentTransform = gameObject.GetComponent<Rigidbody>().transform;
+            Transform currentTransform = gameObject.transform;
             SpotList = new List<ResourceSpot>();
             // spots are around the food object
             for (int i = 0; i < SpotNumber; i++)

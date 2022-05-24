@@ -31,7 +31,7 @@ namespace Assets.FOV
             // clear previous
             InFOV.Clear();
 
-            Vector3 currentPosition = gameObject.GetComponent<Rigidbody>().position;
+            Vector3 currentPosition = transform.position;
             Collider currentCollider = gameObject.GetComponent<Collider>();
 
             // find objects in current FOV

@@ -86,13 +86,13 @@ namespace Assets.Behaviors
             {
                 // food case
                 case GoalName.Food:
-                    if (gameObject.GetComponent<ZebraSearchFood>().Status == SearchingStatus.Arrived && gameObject.GetComponent<ZebraSearchFood>().IsInPosition())
+                    if (gameObject.GetComponent<ZebraSearchFood>().Status == SearchingStatus.Arrived)
                         return true;
                     break;
 
                 // water case
                 case GoalName.Water:
-                    if (gameObject.GetComponent<ZebraSearchWater>().Status == SearchingStatus.Arrived && gameObject.GetComponent<ZebraSearchWater>().IsInPosition())
+                    if (gameObject.GetComponent<ZebraSearchWater>().Status == SearchingStatus.Arrived)
                         return true;
                     break;
             }
