@@ -278,7 +278,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb9b201662871884481aa012c4ec89c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentNearerFreeWater: {fileID: 0}
+  AssignedResource: {fileID: 0}
   Status: 0
 --- !u!114 &423606107
 MonoBehaviour:
@@ -311,8 +311,8 @@ MonoBehaviour:
   Sociality: 50
   Energy: 100
   Type: 1
-  FoodDecreaseRate: 5
-  WaterDecreaseRate: 3
+  FoodDecreaseRate: 25
+  WaterDecreaseRate: 20
 --- !u!114 &423606109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd9da3f6f4fd57c469e590f770733f48, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CurrentNearerFreeFood: {fileID: 0}
+  AssignedResource: {fileID: 0}
   Status: 0
 --- !u!114 &423606110
 MonoBehaviour:
@@ -339,9 +339,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4023fcfab4f3905438db8811dbc87459, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FoodToEat: {fileID: 0}
-  EatVelocity: 1
+  ResourceToConsume: {fileID: 0}
+  ConsumeVelocity: 1
   Status: 0
+  ResourceTarget: 0
+  CurrentZebra: {fileID: 0}
 --- !u!114 &423606111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,9 +356,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d47a7d8eaca2a64fb6a468efbc9a31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WaterToDrink: {fileID: 0}
-  DrinkVelocity: 2
+  ResourceToConsume: {fileID: 0}
+  ConsumeVelocity: 1
   Status: 0
+  ResourceTarget: 0
+  CurrentZebra: {fileID: 0}
 --- !u!114 &423606112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -815,7 +819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f1d57286f0a9b4ebd5fbe832c01c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnNumber: 4
+  SpawnNumber: 5
 --- !u!4 &1852025619
 Transform:
   m_ObjectHideFlags: 0

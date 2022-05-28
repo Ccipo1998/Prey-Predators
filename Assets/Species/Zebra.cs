@@ -17,8 +17,8 @@ namespace Assets.Species
             Type = AnimalType.Herbivore;
 
             // zebra rates
-            FoodDecreaseRate = 5.0f;
-            WaterDecreaseRate = 3.0f;
+            FoodDecreaseRate = 25.0f;
+            WaterDecreaseRate = 20.0f;
 
             // herbivore knowledge
             Knowledge = new HerbivoreKnowledge();
@@ -29,6 +29,8 @@ namespace Assets.Species
             InvokeRepeating("DecreaseFood", 1, FoodDecreaseRate);
             InvokeRepeating("DecreaseWater", 5, WaterDecreaseRate);
         }
+
+        #region TIMING_FUNCTIONS
 
         // decrease food over time
         private void DecreaseFood()
@@ -43,6 +45,8 @@ namespace Assets.Species
             if (Water > 0)
                 Water--;
         }
+
+        #endregion TIMING_FUNCTIONS
 
         // simple goal selection
         public Goal ChoosePressingBasicGoal()
@@ -231,11 +235,11 @@ namespace Assets.Species
             switch (choosen.Name)
             {
                 case GoalName.Food:
-                    gameObject.GetComponent<ZebraEat>().SetFoodTarget((int)(choosenTiming * gameObject.GetComponent<ZebraEat>().EatVelocity + Food));
+                    gameObject.GetComponent<ZebraEat>().SetFoodTarget((int)(choosenTiming * gameObject.GetComponent<ZebraEat>().ConsumeVelocity + Food));
                     break;
 
                 case GoalName.Water:
-                    gameObject.GetComponent<ZebraDrink>().SetWaterTarget((int)(choosenTiming * gameObject.GetComponent<ZebraDrink>().DrinkVelocity + Water));
+                    gameObject.GetComponent<ZebraDrink>().SetWaterTarget((int)(choosenTiming * gameObject.GetComponent<ZebraDrink>().ConsumeVelocity + Water));
                     break;
             }
 
@@ -251,8 +255,8 @@ namespace Assets.Species
         public float GetGoalChange(GoalName selectedGoalName, GoalName targetGoalName, int timing)
         {
             float change = 0.0f;
-            float eatVelocity = gameObject.GetComponent<ZebraEat>().EatVelocity;
-            float drinkVelocity = gameObject.GetComponent<ZebraDrink>().DrinkVelocity;
+            float eatVelocity = gameObject.GetComponent<ZebraEat>().ConsumeVelocity;
+            float drinkVelocity = gameObject.GetComponent<ZebraDrink>().ConsumeVelocity;
 
             switch (selectedGoalName)
             {
@@ -320,7 +324,7 @@ namespace Assets.Species
             };
         }
 
-        // Stay() function of the Survive state
+        // change the next goal of the Zebra
         public bool SelectNextGoal()
         {
             // compute next basic goal to survive
@@ -334,6 +338,8 @@ namespace Assets.Species
             CurrentGoal = nextGoal;
             return true;
         }
+
+        #region HSM_FUNCTIONS
 
         // Stay() function of the Search state
         public void Search()
@@ -415,5 +421,7 @@ namespace Assets.Species
             // find other Zebras
 
         }
+
+        #endregion HSM_FUNCTIONS
     }
 }

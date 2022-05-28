@@ -5,24 +5,8 @@ using UnityEngine;
 
 namespace Assets.Actions
 {
-    public class ZebraDrink : MonoBehaviour
+    public class ZebraDrink : ZebraConsume
     {
-        // aimed water object
-        public GameObject WaterToDrink;
-        // the current spot assegned to the animal basing on current position
-        public ResourceSpot AssignedSpot;
-        // drink rate
-        public float DrinkVelocity = 1.0f;
-        // status
-        public DrinkingStatus Status;
-
-        // static components
-        private Coroutine coroutine;
-
-        // water target value for drinking duration
-        private int WaterTarget = 0;
-        private Zebra CurrentZebra;
-
         // Use this for initialization
         void Start()
         {
@@ -32,52 +16,46 @@ namespace Assets.Actions
         // Called on enabling
         private void OnEnable()
         {
-            Status = DrinkingStatus.Drinking;
-            // static components init
-            CurrentZebra = gameObject.GetComponent<Zebra>();
+            InitComponents();
 
-            // get food info when enabled
-            WaterToDrink = gameObject.GetComponent<ZebraSearchWater>().CurrentNearerFreeWater;
-            AssignedSpot = gameObject.GetComponent<ZebraSearchWater>().CurrentNearerFreeSpot;
-
-            // start the coroutine to add food to animal and subtract food to the resource
-            coroutine = StartCoroutine(DrinkAndConsume());
+            // start the coroutine to add water to animal and subtract water to the resource
+            Coroutine = StartCoroutine(DrinkAndConsume());
         }
 
         private IEnumerator DrinkAndConsume()
         {
-            while (CurrentZebra.Water < WaterTarget)
+            while (CurrentZebra.Water < ResourceTarget && !ResourceToConsume.GetComponent<Resource>().IsOver())
             {
-                for (int i = 0; i < DrinkVelocity; i++)
-                {
-                    WaterToDrink.GetComponent<Water>().Consume(1);
-                    gameObject.GetComponent<Zebra>().Drink(1);
-                }
-                yield return new WaitForSeconds(1);
+                ResourceToConsume.GetComponent<Resource>().Consume(1);
+                gameObject.GetComponent<Zebra>().Drink(1);
+
+                yield return new WaitForSeconds(1 / ConsumeVelocity);
             }
 
-            Status = DrinkingStatus.Done;
+            Status = ConsumingStatus.Done;
         }
 
         // Called on disabling
         private void OnDisable()
         {
-            // end the coroutine
-            StopCoroutine(coroutine);
-            // free the spot after a while -> so the animal moved away a little from the spot position TODO
-            AssignedSpot.Free();
-            // standard exit status
-            Status = DrinkingStatus.Done;
+            FreeSpot();
+            ClearComponents();
         }
 
         public void SetWaterTarget(int waterTarget)
         {
-            WaterTarget = waterTarget;
+            ResourceTarget = waterTarget;
         }
-    }
 
-    public enum DrinkingStatus
-    {
-        Drinking, Done
+        private void InitComponents()
+        {
+            Status = ConsumingStatus.Consuming;
+            // static components init
+            CurrentZebra = gameObject.GetComponent<Zebra>();
+
+            // get food info when enabled
+            ResourceToConsume = gameObject.GetComponent<ZebraSearchWater>().AssignedResource;
+            AssignedSpot = gameObject.GetComponent<ZebraSearchWater>().AssignedSpot;
+        }
     }
 }

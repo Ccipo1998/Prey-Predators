@@ -38,6 +38,13 @@ namespace Assets.Resources
         // assign the spot to the nearest object
         public GameObject AssignSpot()
         {
+            // if the spot is occupied -> no assignment
+            if (!IsFree)
+            {
+                Queue.Clear();
+                return null;
+            }
+
             GameObject assigned = null;
             float distance = float.PositiveInfinity;
             for (int i = 0; i < Queue.Count; i++)

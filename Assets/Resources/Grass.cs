@@ -8,20 +8,13 @@ namespace Assets.Resources
     {
         public Grass()
         {
+            Quantity = 50;
         }
 
         // Use this for initialization
         void Start()
         {
-            // create the list of positions where animals can go to eat
-            Transform currentTransform = gameObject.transform;
-            SpotList = new List<ResourceSpot>();
-            // spots are around the food object
-            for (int i = 0; i < SpotNumber; i++)
-            {
-                currentTransform.Rotate(currentTransform.up, (float)(360 / SpotNumber));
-                SpotList.Add( new ResourceSpot(currentTransform.position + gameObject.transform.forward * SpotDistance));
-            }
+            CreateSpots();
 
             // grass growing
             InvokeRepeating("Grow", 1, 2);

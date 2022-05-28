@@ -107,15 +107,20 @@ namespace Assets.Behaviors
 
             bool isDone = false;
 
+            /* QUESTO NON FUNZIONA PERCHE ZebraConsume.Status QUI RIMANE Consuming, CAPIRE PERCHE...
+            if (gameObject.GetComponent<ZebraConsume>().Status == ConsumingStatus.Done)
+                isDone = true;
+            */
+
             switch (currentGoal.Name)
             {
                 case GoalName.Food:
-                    if (gameObject.GetComponent<ZebraEat>().Status == EatingStatus.Done)
+                    if (gameObject.GetComponent<ZebraEat>().Status == ConsumingStatus.Done)
                         isDone = true;
                     break;
 
                 case GoalName.Water:
-                    if (gameObject.GetComponent<ZebraDrink>().Status == DrinkingStatus.Done)
+                    if (gameObject.GetComponent<ZebraDrink>().Status == ConsumingStatus.Done)
                         isDone = true;
                     break;
             }

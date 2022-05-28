@@ -7,79 +7,57 @@ using UnityEngine.AI;
 
 namespace Assets.Actions
 {
-    public class ZebraEat : MonoBehaviour
+    public class ZebraEat : ZebraConsume
     {
-        // aimed food object
-        public GameObject FoodToEat;
-        // the current spot assegned to the animal basing on current position
-        public ResourceSpot AssignedSpot;
-        // eating rate
-        public float EatVelocity = 1.0f;
-        // status
-        public EatingStatus Status;
-
-        // static components
-        private Coroutine coroutine;
-        private Zebra CurrentZebra;
-
-        // food target value for eating duration
-        private int FoodTarget = 0;
-
         // Use this for initialization
         void Start()
         {
-            
+
         }
 
         // Called on enabling
         private void OnEnable()
         {
-            Status = EatingStatus.Eating;
-            // static components init
-            CurrentZebra = gameObject.GetComponent<Zebra>();
+            InitComponents();
 
-            // get food info when enabled
-            FoodToEat = gameObject.GetComponent<ZebraSearchFood>().CurrentNearerFreeFood;
-            AssignedSpot = gameObject.GetComponent<ZebraSearchFood>().CurrentNearerFreeSpot;
-
-            // start the coroutine to add food to animal and subtract food to the resource
-            coroutine = StartCoroutine(EatAndConsume());
+            // start the coroutine to add water to animal and subtract water to the resource
+            Coroutine = StartCoroutine(EatAndConsume());
         }
 
         private IEnumerator EatAndConsume()
         {
-            while (CurrentZebra.Food < FoodTarget)
+            while (CurrentZebra.Food < ResourceTarget && !ResourceToConsume.GetComponent<Resource>().IsOver())
             {
-                for (int i = 0; i < EatVelocity; i++)
-                {
-                    FoodToEat.GetComponent<Food>().Consume(1);
-                    CurrentZebra.Eat(1);
-                }
-                yield return new WaitForSeconds(1);
+                ResourceToConsume.GetComponent<Resource>().Consume(1);
+                gameObject.GetComponent<Zebra>().Eat(1);
+
+                yield return new WaitForSeconds(1 / ConsumeVelocity);
             }
-            
-            Status = EatingStatus.Done;
+
+            Status = ConsumingStatus.Done;
         }
 
         // Called on disabling
         private void OnDisable()
         {
-            // end the coroutine
-            StopCoroutine(coroutine);
-            // free the spot after a while -> so the animal moved away a little from the spot position TODO
-            AssignedSpot.Free();
-            // standard exit status
-            Status = EatingStatus.Done;
+            FreeSpot();
+            ClearComponents();
         }
 
         public void SetFoodTarget(int foodTarget)
         {
-            FoodTarget = foodTarget;
+            ResourceTarget = foodTarget;
         }
-    }
 
-    public enum EatingStatus
-    {
-        Eating, Done
+        private void InitComponents()
+        {
+            Status = ConsumingStatus.Consuming;
+            // static components init
+            CurrentZebra = gameObject.GetComponent<Zebra>();
+
+            // get food info when enabled
+            ResourceToConsume = gameObject.GetComponent<ZebraSearchFood>().AssignedResource;
+            AssignedSpot = gameObject.GetComponent<ZebraSearchFood>().AssignedSpot;
+        }
     }
 }

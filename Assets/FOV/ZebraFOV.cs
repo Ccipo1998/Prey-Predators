@@ -123,7 +123,7 @@ namespace Assets.FOV
             */
         }
 
-        // get the nearer food object in FOV with at least a free spot
+        // get the nearer not over food object in FOV with at least a free spot
         public GameObject GetNearerFreeFood()
         {
             GameObject nearerFreeFood = null;
@@ -134,7 +134,7 @@ namespace Assets.FOV
             {
                 GameObject seenObject = ObjectsInFOV[i];
                 float seenObjectDistance = Vector3.Distance(gameObject.transform.position, seenObject.transform.position);
-                if (seenObject.GetComponent<Food>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Food>().HasFreeSpot())
+                if (seenObject.GetComponent<Food>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Food>().HasFreeSpot())// && !seenObject.GetComponent<Food>().IsOver())
                 {
                     nearerFreeFood = seenObject;
                     nearerDistance = seenObjectDistance;
@@ -144,18 +144,18 @@ namespace Assets.FOV
             return nearerFreeFood;
         }
 
-        // get the nearer food object in FOV with at least a free spot
+        // get the nearer not over water object in FOV with at least a free spot
         public GameObject GetNearerFreeWater()
         {
             GameObject nearerFreeWater = null;
             float nearerDistance = float.PositiveInfinity;
 
-            // check current FOV for food
+            // check current FOV for water
             for (int i = 0; i < ObjectsInFOV.Count; i++)
             {
                 GameObject seenObject = ObjectsInFOV[i];
                 float seenObjectDistance = Vector3.Distance(gameObject.transform.position, seenObject.transform.position);
-                if (seenObject.GetComponent<Water>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Water>().HasFreeSpot())
+                if (seenObject.GetComponent<Water>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Water>().HasFreeSpot())// && !seenObject.GetComponent<Water>().IsOver())
                 {
                     nearerFreeWater = seenObject;
                     nearerDistance = seenObjectDistance;
