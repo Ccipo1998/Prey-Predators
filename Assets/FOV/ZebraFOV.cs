@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Assets.GoalOrientedBehavior;
 
 namespace Assets.FOV
 {
@@ -59,68 +60,58 @@ namespace Assets.FOV
             }
         }
 
-        // TODO: l'ultima posizione di una risorsa conosciuta diventa null quando la si visita e non c'è più la risorsa disponibile
-        // TODO: si aggiunge la posizione di una risorsa alla conoscenza solo quando si riesce a consumare quella risorsa, non solo quando la si vede
-        // add positions to internal knowledge and objects of interest in current FOV
+        // add positions to internal knowledge
         public void AddKnowledge()
         {
-            /*
-            // params to clear near objects of interest
-            bool isFoodNear = false;
-            bool isWaterNear = false;
-            */
-
             Zebra currentAnimal = gameObject.GetComponent<Zebra>();
             Vector3 currentPosition = transform.position;
+            float knownFoodDistance = currentAnimal.Knowledge.LastFoundedFood != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedFood.position) : float.PositiveInfinity;
+            float knownWaterDistance = currentAnimal.Knowledge.LastFoundedWater != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedWater.position) : float.PositiveInfinity;
 
-            for (int i = 0; i < ObjectsInFOV.Count; i++)
+            bool foodChecked = false;
+            bool waterChecked = false;
+
+            int index = 0;
+            while (!foodChecked && !waterChecked && index < ObjectsInFOV.Count)
             {
-                GameObject seenObject = ObjectsInFOV[i];
-                float objectDistance = Vector3.Distance(currentPosition, seenObject.transform.position);
+                GameObject seenObject = ObjectsInFOV[index];
 
-                // seen object is food
-                if (seenObject.GetComponent<Food>() != null)
+                if (seenObject.GetComponent<Food>() != null && !seenObject.GetComponent<Food>().IsOver() && seenObject.GetComponent<Food>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name == GoalName.Food)
                 {
-                    // there is food in current FOV
-                    //isFoodNear = true;
-
-                    float lastFoodDistance = currentAnimal.Knowledge.LastFoundedFood != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedFood.position) : float.PositiveInfinity;
-                    if (objectDistance <= lastFoodDistance)
-                    {
-                        // position info in internal knowledge (for searching)
-                        currentAnimal.Knowledge.LastFoundedFood = seenObject.transform.transform;
-
-                        // gameobject of actual food in current FOV, for actions on that
-                        //NearestFoodInFOV = seenObject;
-                    }
+                    // food in FOV available to eat and when the zebra is searching for it -> knowledge deleted because food is in FOV
+                    currentAnimal.Knowledge.LastFoundedFood = null;
                 }
-                // seen object is water
-                else if (seenObject.GetComponent<Water>() != null)
+                else if (seenObject.GetComponent<Food>() != null && !seenObject.GetComponent<Food>().IsOver() && seenObject.GetComponent<Food>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name != GoalName.Food)
                 {
-                    // there is water in current FOV
-                    //isWaterNear = true;
-
-                    float lastWaterDistance = currentAnimal.Knowledge.LastFoundedWater != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedWater.position) : float.PositiveInfinity;
-                    if (objectDistance <= lastWaterDistance)
-                    {
-                        // position info in internal knowledge (for searching)
-                        currentAnimal.Knowledge.LastFoundedWater = seenObject.transform.transform;
-
-                        // gameobject of actual food in current FOV, for actions on that
-                        //NearestWaterInFOV = seenObject;
-                    }
+                    // food in FOV available to eat and when the zebra is searching another resource -> knowledge added for future search of food
+                    currentAnimal.Knowledge.LastFoundedFood = seenObject.transform;
+                    foodChecked = true;
                 }
-                // else if (seenObject.GetComponent<Lion>() != null) // seen predator position TODO
-                // else if (seenObject.GetComponent<Zebra>() != null) // seen similar position TODO
+                else if (seenObject.GetComponent<Food>() != null && (seenObject.GetComponent<Food>().IsOver() || !seenObject.GetComponent<Food>().HasFreeSpot()) && knownFoodDistance < Radius)
+                {
+                    // food in FOV not available to eat and when the zebra arrived to the known place with food -> knowledge deleted because previous knoledge for food led to an unavailable resource
+                    currentAnimal.Knowledge.LastFoundedFood = null;
+                }
+
+                if (seenObject.GetComponent<Water>() != null && !seenObject.GetComponent<Water>().IsOver() && seenObject.GetComponent<Water>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name == GoalName.Water)
+                {
+                    // water in FOV available to drink and when the zebra is searching for it -> knowledge deleted because water is in FOV
+                    currentAnimal.Knowledge.LastFoundedWater = null;
+                }
+                else if (seenObject.GetComponent<Water>() != null && !seenObject.GetComponent<Water>().IsOver() && seenObject.GetComponent<Water>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name != GoalName.Water)
+                {
+                    // water in FOV available to drink and when the zebra is searching another resource -> knowledge added for future search of water
+                    currentAnimal.Knowledge.LastFoundedWater = seenObject.transform;
+                    waterChecked = true;
+                }
+                else if (seenObject.GetComponent<Water>() != null && (seenObject.GetComponent<Water>().IsOver() || !seenObject.GetComponent<Water>().HasFreeSpot()) && knownWaterDistance < Radius)
+                {
+                    // water in FOV not available to drink and when the zebra arrived to the known place with water -> knowledge deleted because previous knoledge for water led to an unavailable resource
+                    currentAnimal.Knowledge.LastFoundedWater = null;
+                }
+
+                index++;
             }
-
-            /*
-            // clear near objects
-            if (!isFoodNear)
-                NearestFoodInFOV = null;
-            if (!isWaterNear)
-                NearestWaterInFOV = null;
-            */
         }
 
         // get the nearer not over food object in FOV with at least a free spot
@@ -134,7 +125,7 @@ namespace Assets.FOV
             {
                 GameObject seenObject = ObjectsInFOV[i];
                 float seenObjectDistance = Vector3.Distance(gameObject.transform.position, seenObject.transform.position);
-                if (seenObject.GetComponent<Food>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Food>().HasFreeSpot())// && !seenObject.GetComponent<Food>().IsOver())
+                if (seenObject.GetComponent<Food>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Food>().HasFreeSpot() && !seenObject.GetComponent<Food>().IsOver())
                 {
                     nearerFreeFood = seenObject;
                     nearerDistance = seenObjectDistance;
@@ -155,7 +146,7 @@ namespace Assets.FOV
             {
                 GameObject seenObject = ObjectsInFOV[i];
                 float seenObjectDistance = Vector3.Distance(gameObject.transform.position, seenObject.transform.position);
-                if (seenObject.GetComponent<Water>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Water>().HasFreeSpot())// && !seenObject.GetComponent<Water>().IsOver())
+                if (seenObject.GetComponent<Water>() != null && seenObjectDistance <= nearerDistance && seenObject.GetComponent<Water>().HasFreeSpot() && !seenObject.GetComponent<Water>().IsOver())
                 {
                     nearerFreeWater = seenObject;
                     nearerDistance = seenObjectDistance;
