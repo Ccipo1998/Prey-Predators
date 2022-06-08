@@ -27,6 +27,7 @@ namespace Assets.Spawner
             {
                 GameObject zebraClone = Instantiate(Zebra);
                 zebraClone.transform.position = Zebra.transform.position + new Vector3((float)i * 2, 1.0f, 0.0f);
+                zebraClone.transform.rotation = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), zebraClone.transform.up);
             }
             
         }

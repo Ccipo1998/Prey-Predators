@@ -12,12 +12,12 @@ namespace Assets.Actions
         Food, Water
     }
 
-    public enum SearchingStatus
+    public enum SearchingResourceStatus
     {
         SearchingResource, SearchingSpot, Arrived
     }
 
-    public class ZebraSearch : MonoBehaviour
+    public class ZebraSearchResource : MonoBehaviour
     {
         // static components
         private NavMeshAgent CurrentNavMeshAgent;
@@ -26,11 +26,14 @@ namespace Assets.Actions
         private Vector3 CurrentPosition;
 
         private bool InQueue = false;
+        private float LastWanderingTime;
 
         // searching info
         public GameObject AssignedResource;
         public ResourceSpot AssignedSpot;
-        public SearchingStatus Status;
+        public SearchingResourceStatus Status;
+        public float WanderingRate = 2.0f;
+        public float MaxRotation = 90.0f;
 
         private GameObject CurrentNearerFreeResource;
         private ResourceSpot CurrentNearerFreeSpot;
@@ -42,13 +45,14 @@ namespace Assets.Actions
             CurrentNavMeshAgent = gameObject.GetComponent<NavMeshAgent>();
             CurrentKnowledge = gameObject.GetComponent<Zebra>().Knowledge;
             CurrentZebraFOV = gameObject.GetComponent<ZebraFOV>();
-            Status = SearchingStatus.SearchingResource;
+            Status = SearchingResourceStatus.SearchingResource;
+            LastWanderingTime = -WanderingRate;
         }
 
         public void ClearParameters()
         {
             // clear status and parameters
-            Status = SearchingStatus.SearchingResource;
+            Status = SearchingResourceStatus.SearchingResource;
             InQueue = false;
 
             // disable current nav mesh
@@ -73,7 +77,7 @@ namespace Assets.Actions
 
             switch (Status)
             {
-                case SearchingStatus.SearchingResource:
+                case SearchingResourceStatus.SearchingResource:
 
                     // check resource in FOV
                     GameObject nearerFreeResource;
@@ -86,7 +90,7 @@ namespace Assets.Actions
                     {
                         // resource with at least one free spot found -> search nearer free spot
                         CurrentNearerFreeResource = nearerFreeResource;
-                        Status = SearchingStatus.SearchingSpot;
+                        Status = SearchingResourceStatus.SearchingSpot;
                     }
                     // else search basing on knowledge
                     else if (searchType == SearchType.Food && CurrentKnowledge.LastFoundedFood != null)
@@ -95,7 +99,7 @@ namespace Assets.Actions
                         //CurrentNearerFreeResource = null;
                         //CurrentNearerFreeSpot = null;
 
-                        CurrentNavMeshAgent.destination = CurrentKnowledge.LastFoundedFood.position;
+                        CurrentNavMeshAgent.destination = (Vector3)CurrentKnowledge.LastFoundedFood;
                     }
                     else if (searchType == SearchType.Water && CurrentKnowledge.LastFoundedWater != null)
                     {
@@ -103,7 +107,7 @@ namespace Assets.Actions
                         //CurrentNearerFreeResource = null;
                         //CurrentNearerFreeSpot = null;
 
-                        CurrentNavMeshAgent.destination = CurrentKnowledge.LastFoundedWater.position;
+                        CurrentNavMeshAgent.destination = (Vector3)CurrentKnowledge.LastFoundedWater;
                     }
                     else
                     {
@@ -115,7 +119,7 @@ namespace Assets.Actions
 
                     break;
 
-                case SearchingStatus.SearchingSpot:
+                case SearchingResourceStatus.SearchingSpot:
 
                     // get nearer free spot
                     ResourceSpot nearerFreeSpot = CurrentNearerFreeResource.GetComponent<Resource>().GetNearerFreeSpot(CurrentPosition);
@@ -145,7 +149,7 @@ namespace Assets.Actions
                                     // spot assigned to current animal -> clear queue and occupy the spot
                                     CurrentNearerFreeSpot.ClearQueue();
                                     CurrentNearerFreeSpot.Occupy();
-                                    Status = SearchingStatus.Arrived;
+                                    Status = SearchingResourceStatus.Arrived;
 
                                     CurrentNavMeshAgent.ResetPath();
 
@@ -168,12 +172,12 @@ namespace Assets.Actions
                     else
                     {
                         // there is no more a free spot -> search another resource
-                        Status = SearchingStatus.SearchingResource;
+                        Status = SearchingResourceStatus.SearchingResource;
                     }
 
                     break;
 
-                case SearchingStatus.Arrived:
+                case SearchingResourceStatus.Arrived:
 
                     // set position and look at
                     transform.position = CurrentNearerFreeSpot.Position;
@@ -185,10 +189,14 @@ namespace Assets.Actions
 
         public void Wander()
         {
-            float maxRotation = 120.0f;
-            Vector3 randomDirection = Quaternion.AngleAxis(Random.Range(-maxRotation, maxRotation), gameObject.transform.up) * gameObject.transform.forward;
+            if (Time.time - LastWanderingTime > WanderingRate)
+            {
+                LastWanderingTime = Time.time;
 
-            CurrentNavMeshAgent.destination = gameObject.transform.position + randomDirection * 2;
+                Vector3 randomDirection = Quaternion.AngleAxis(Random.Range(-MaxRotation, MaxRotation), gameObject.transform.up) * gameObject.transform.forward;
+
+                CurrentNavMeshAgent.destination = gameObject.transform.position + randomDirection * (CurrentNavMeshAgent.acceleration * WanderingRate);
+            }
         }
 
         private void OnDisable()

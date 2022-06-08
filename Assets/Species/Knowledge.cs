@@ -9,12 +9,12 @@ namespace Assets.Species
 
         // herbivore last food = plant
         // carnivorous last food = prey
-        public Transform LastFoundedFood;
+        public Vector3? LastFoundedFood;
 
         // position of last seen source of water
-        public Transform LastFoundedWater;
+        public Vector3? LastFoundedWater;
 
         // last known position of a similar animal
-        public Transform LastSeenSimilar;
+        public Vector3? LastSeenSimilar;
     }
 }

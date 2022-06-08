@@ -18,7 +18,7 @@ namespace Assets.Species
 
             // zebra rates
             FoodDecreaseRate = 25.0f;
-            WaterDecreaseRate = 20.0f;
+            WaterDecreaseRate = 8.0f;
 
             // herbivore knowledge
             Knowledge = new HerbivoreKnowledge();
@@ -71,7 +71,7 @@ namespace Assets.Species
             {
                 // calculate path distance
                 NavMeshPath navMeshPath = new NavMeshPath();
-                gameObject.GetComponent<NavMeshAgent>().CalculatePath(Knowledge.LastFoundedFood.position, navMeshPath);
+                gameObject.GetComponent<NavMeshAgent>().CalculatePath((Vector3)Knowledge.LastFoundedFood, navMeshPath);
                 float distance = Vector3.Distance(gameObject.transform.position, navMeshPath.corners[0]);
                 for (int i = 0; i < navMeshPath.corners.Length - 1; ++i)
                 {
@@ -96,7 +96,7 @@ namespace Assets.Species
             {
                 // calculate path distance
                 NavMeshPath navMeshPath = new NavMeshPath();
-                gameObject.GetComponent<NavMeshAgent>().CalculatePath(Knowledge.LastFoundedWater.position, navMeshPath);
+                gameObject.GetComponent<NavMeshAgent>().CalculatePath((Vector3)Knowledge.LastFoundedWater, navMeshPath);
                 float distance = Vector3.Distance(gameObject.transform.position, navMeshPath.corners[0]);
                 for (int i = 0; i < navMeshPath.corners.Length - 1; ++i)
                 {
@@ -196,7 +196,7 @@ namespace Assets.Species
             float currentDiscontentment = float.PositiveInfinity;
 
             // several timing considered: better is choose
-            List<int> timings = new List<int> { 5, 10, 15, 20 };
+            List<int> timings = new List<int> { 10, 20, 30 };
 
             // loop on possible timings for actions
             foreach (int timing in timings)
@@ -293,26 +293,6 @@ namespace Assets.Species
 
             return change;
         }
-
-        /*
-        public float Discontentment(GoalName goalName, List<Goal> goals)
-        {
-            float discontentment = 0.0f;
-
-            for (int i = 0; i < goals.Count; i++)
-            {
-                float value = 0.0f;
-                if (goals[i].Name == goalName)
-                    value = goals[i].Value - ((1 / GetGoalDecreaseRate(goals[i].Name)) * GetDistanceFromNearerFreeResource(goals[i].Name));
-                else
-                    value = goals[i].Value + ((1 / GetGoalDecreaseRate(goals[i].Name)) * GetDistanceFromNearerFreeResource(goals[i].Name));
-                value *= value;
-                discontentment += value;
-            }
-
-            return discontentment;
-        }
-        */
 
         // current zebra needs
         private List<Goal> GetBasicGoals()
@@ -416,10 +396,23 @@ namespace Assets.Species
             CurrentGoal = null;
         }
 
+        // Enter() function of Welfare state
+        public void WelfareEnter()
+        {
+            // clear current goal -> no goal in states different from survive
+            CurrentGoal = null;
+        }
+
         public void Happiness()
         {
-            // find other Zebras
+            // flocking behavior
+            gameObject.GetComponent<ZebraFlocking>().enabled = true;
+        }
 
+        public void HappinessExit()
+        {
+            // stop flocking behavior
+            gameObject.GetComponent<ZebraFlocking>().enabled = false;
         }
 
         #endregion HSM_FUNCTIONS

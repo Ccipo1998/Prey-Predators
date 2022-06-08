@@ -17,6 +17,9 @@ namespace Assets.FOV
         // all the objects that the animal can see currently
         public List<GameObject> ObjectsInFOV = new List<GameObject>();
 
+        // zebras number in FOV
+        public int CurrentZebrasNumber = 0;
+
         /* -> moved to zebraeat behavior
         // objects of interest
         public GameObject NearestFoodInFOV;
@@ -47,6 +50,9 @@ namespace Assets.FOV
             // find objects in current FOV
             Collider[] colliders = Physics.OverlapSphere(currentPosition, Radius, TargetsMask);
 
+            // zebras number in FOV
+            int ZebrasNumber = 0;
+
             // find visible ones
             for (int i = 0; i < colliders.Length; i++)
             {
@@ -56,8 +62,15 @@ namespace Assets.FOV
                 {
                     ObjectsInFOV.Add(colliders[i].gameObject);
                     //Debug.DrawLine(currentPosition, colliders[i].transform.position, Color.red);
+
+                    // update zebras number
+                    if (colliders[i].gameObject.GetComponent<Zebra>() != null)
+                        ZebrasNumber++;
                 }
             }
+
+            // set zebras number
+            CurrentZebrasNumber = ZebrasNumber;
         }
 
         // add positions to internal knowledge
@@ -65,17 +78,20 @@ namespace Assets.FOV
         {
             Zebra currentAnimal = gameObject.GetComponent<Zebra>();
             Vector3 currentPosition = transform.position;
-            float knownFoodDistance = currentAnimal.Knowledge.LastFoundedFood != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedFood.position) : float.PositiveInfinity;
-            float knownWaterDistance = currentAnimal.Knowledge.LastFoundedWater != null ? Vector3.Distance(currentPosition, currentAnimal.Knowledge.LastFoundedWater.position) : float.PositiveInfinity;
+            float knownFoodDistance = currentAnimal.Knowledge.LastFoundedFood != null ? Vector3.Distance(currentPosition, (Vector3)currentAnimal.Knowledge.LastFoundedFood) : float.PositiveInfinity;
+            float knownWaterDistance = currentAnimal.Knowledge.LastFoundedWater != null ? Vector3.Distance(currentPosition, (Vector3)currentAnimal.Knowledge.LastFoundedWater) : float.PositiveInfinity;
+            float knownSimilarDistance = currentAnimal.Knowledge.LastSeenSimilar != null ? Vector3.Distance(currentPosition, (Vector3)currentAnimal.Knowledge.LastSeenSimilar) : float.PositiveInfinity;
 
             bool foodChecked = false;
             bool waterChecked = false;
+            bool similarChecked = false;
 
             int index = 0;
-            while (!foodChecked && !waterChecked && index < ObjectsInFOV.Count)
+            while ((!foodChecked || !waterChecked || !similarChecked) && index < ObjectsInFOV.Count)
             {
                 GameObject seenObject = ObjectsInFOV[index];
 
+                // food check
                 if (seenObject.GetComponent<Food>() != null && !seenObject.GetComponent<Food>().IsOver() && seenObject.GetComponent<Food>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name == GoalName.Food)
                 {
                     // food in FOV available to eat and when the zebra is searching for it -> knowledge deleted because food is in FOV
@@ -84,7 +100,7 @@ namespace Assets.FOV
                 else if (seenObject.GetComponent<Food>() != null && !seenObject.GetComponent<Food>().IsOver() && seenObject.GetComponent<Food>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name != GoalName.Food)
                 {
                     // food in FOV available to eat and when the zebra is searching another resource -> knowledge added for future search of food
-                    currentAnimal.Knowledge.LastFoundedFood = seenObject.transform;
+                    currentAnimal.Knowledge.LastFoundedFood = seenObject.transform.position;
                     foodChecked = true;
                 }
                 else if (seenObject.GetComponent<Food>() != null && (seenObject.GetComponent<Food>().IsOver() || !seenObject.GetComponent<Food>().HasFreeSpot()) && knownFoodDistance < Radius)
@@ -92,7 +108,14 @@ namespace Assets.FOV
                     // food in FOV not available to eat and when the zebra arrived to the known place with food -> knowledge deleted because previous knoledge for food led to an unavailable resource
                     currentAnimal.Knowledge.LastFoundedFood = null;
                 }
+                if (seenObject.GetComponent<Food>() != null && !seenObject.GetComponent<Food>().IsOver() && seenObject.GetComponent<Food>().HasFreeSpot() && currentAnimal.CurrentGoal == null)
+                {
+                    // food in FOV available to eat and when the zebra is not searching for resources -> knowledge added for future search of food
+                    currentAnimal.Knowledge.LastFoundedFood = seenObject.transform.position;
+                    foodChecked = true;
+                }
 
+                // water check
                 if (seenObject.GetComponent<Water>() != null && !seenObject.GetComponent<Water>().IsOver() && seenObject.GetComponent<Water>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name == GoalName.Water)
                 {
                     // water in FOV available to drink and when the zebra is searching for it -> knowledge deleted because water is in FOV
@@ -101,7 +124,7 @@ namespace Assets.FOV
                 else if (seenObject.GetComponent<Water>() != null && !seenObject.GetComponent<Water>().IsOver() && seenObject.GetComponent<Water>().HasFreeSpot() && currentAnimal.CurrentGoal != null && currentAnimal.CurrentGoal.Name != GoalName.Water)
                 {
                     // water in FOV available to drink and when the zebra is searching another resource -> knowledge added for future search of water
-                    currentAnimal.Knowledge.LastFoundedWater = seenObject.transform;
+                    currentAnimal.Knowledge.LastFoundedWater = seenObject.transform.position;
                     waterChecked = true;
                 }
                 else if (seenObject.GetComponent<Water>() != null && (seenObject.GetComponent<Water>().IsOver() || !seenObject.GetComponent<Water>().HasFreeSpot()) && knownWaterDistance < Radius)
@@ -109,9 +132,26 @@ namespace Assets.FOV
                     // water in FOV not available to drink and when the zebra arrived to the known place with water -> knowledge deleted because previous knoledge for water led to an unavailable resource
                     currentAnimal.Knowledge.LastFoundedWater = null;
                 }
+                if (seenObject.GetComponent<Water>() != null && !seenObject.GetComponent<Water>().IsOver() && seenObject.GetComponent<Water>().HasFreeSpot() && currentAnimal.CurrentGoal == null)
+                {
+                    // water in FOV available to drink and when the zebra is not searching for resources -> knowledge added for future search of water
+                    currentAnimal.Knowledge.LastFoundedWater = seenObject.transform.position;
+                    waterChecked = true;
+                }
+
+                // similar check
+                if (seenObject.GetComponent<Zebra>() != null)
+                {
+                    currentAnimal.Knowledge.LastSeenSimilar = seenObject.transform.position;
+                    similarChecked = true;
+                }
 
                 index++;
             }
+
+            if (currentAnimal.Knowledge.LastSeenSimilar != null && !similarChecked && Vector3.Distance(currentPosition, (Vector3)currentAnimal.Knowledge.LastSeenSimilar) < Radius)
+                // not other zebras in FOV and arrived to known position
+                currentAnimal.Knowledge.LastSeenSimilar = null;
         }
 
         // get the nearer not over food object in FOV with at least a free spot
@@ -168,6 +208,14 @@ namespace Assets.FOV
             }
 
             return zebras;
+        }
+
+        public bool ZebrasInFOV()
+        {
+            if (CurrentZebrasNumber > 0)
+                return true;
+
+            return false;
         }
     }
 }

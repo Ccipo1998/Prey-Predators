@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 namespace Assets.Actions
 {
-    public class ZebraSearchFood : ZebraSearch
+    public class ZebraSearchFood : ZebraSearchResource
     {
         private void Start()
         {

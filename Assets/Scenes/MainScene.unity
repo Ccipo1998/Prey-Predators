@@ -434,6 +434,8 @@ GameObject:
   - component: {fileID: 423606110}
   - component: {fileID: 423606111}
   - component: {fileID: 423606112}
+  - component: {fileID: 423606103}
+  - component: {fileID: 423606113}
   m_Layer: 3
   m_Name: Zebra
   m_TagString: Zebra
@@ -511,12 +513,25 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423606098}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.21, y: 0.64, z: -1.18}
+  m_LocalPosition: {x: -20, y: 0.64, z: -1.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &423606103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423606098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 601939cfdb3af064797070d403e2da56, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SeparationFactor: 4
 --- !u!195 &423606104
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -556,6 +571,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 0
   ObjectsInFOV: []
+  CurrentZebrasNumber: 0
 --- !u!114 &423606106
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -570,6 +586,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AssignedResource: {fileID: 0}
   Status: 0
+  WanderingRate: 4
+  MaxRotation: 90
 --- !u!114 &423606107
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,6 +601,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ReactionTime: 1
+  CurrentState: 
 --- !u!114 &423606108
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -595,14 +614,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4a81dd9e7de57b4a840adddce3c0bda, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Food: 50
-  Water: 50
+  Food: 100
+  Water: 100
   Space: 50
   Sociality: 50
   Energy: 100
   Type: 1
   FoodDecreaseRate: 25
-  WaterDecreaseRate: 20
+  WaterDecreaseRate: 5
 --- !u!114 &423606109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -617,6 +636,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AssignedResource: {fileID: 0}
   Status: 0
+  WanderingRate: 4
+  MaxRotation: 90
 --- !u!114 &423606110
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -663,6 +684,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 461ff09134ae3a344bc725ee790ab830, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &423606113
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423606098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: be404ea6716604841a80809ba0d9a07f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WanderingRate: 2
+  MaxRotation: 90
 --- !u!1 &467940601
 GameObject:
   m_ObjectHideFlags: 0
@@ -1689,7 +1724,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f1d57286f0a9b4ebd5fbe832c01c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnNumber: 5
+  SpawnNumber: 10
 --- !u!4 &1852025619
 Transform:
   m_ObjectHideFlags: 0

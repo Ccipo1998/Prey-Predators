@@ -10,7 +10,8 @@ namespace Assets.Behaviors
     public class ZebraBehavior : MonoBehaviour
     {
         private HSM ZebraHSM;
-        public float ReactionTime = 3f;
+        public float ReactionTime = 1f;
+        public string CurrentState;
 
         // Use this for initialization
         void Start()
@@ -36,17 +37,20 @@ namespace Assets.Behaviors
             Search.EnterActions.Add(gameObject.GetComponent<Zebra>().SearchEnter);
             SatisfyNeed.EnterActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedEnter);
             SatisfyNeed.ExitActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedExit);
-            //Happiness.StayActions.Add(gameObject.GetComponent<Zebra>().Happiness);
+            Welfare.EnterActions.Add(gameObject.GetComponent<Zebra>().WelfareEnter);
+            Happiness.StayActions.Add(gameObject.GetComponent<Zebra>().Happiness);
 
             // transitions
             HSMtransition CanSatisfyTran = new HSMtransition("Can satisfy", CanSatisfy);
             HSMtransition DoneTran = new HSMtransition("Done", Done);
-            //HSMtransition HighPrimaryNeedsLevelsTran = new HSMtransition("High primary needs levels", HighPrimaryNeedLevels);
+            HSMtransition HighPrimaryNeedsLevelsTran = new HSMtransition("High primary needs levels", HighPrimaryNeedLevels);
+            HSMtransition LowPrimaryNeedsLevelsTran = new HSMtransition("Low primary needs levels", LowPrimaryNeedLevels);
 
             // transitions links
             Search.AddTransition(CanSatisfyTran, SatisfyNeed);
             SatisfyNeed.AddTransition(DoneTran, Search);
-            //Survive.AddTransition(HighPrimaryNeedsLevelsTran, Welfare);
+            Survive.AddTransition(HighPrimaryNeedsLevelsTran, Welfare);
+            Welfare.AddTransition(LowPrimaryNeedsLevelsTran, Survive);
 
             // parents
             Welfare.AddParent(Live);
@@ -69,6 +73,16 @@ namespace Assets.Behaviors
             while (true)
             {
                 ZebraHSM.Update();
+
+                // current state name
+                HSMstate state = ZebraHSM.CurrentState;
+                while (state is HSM)
+                {
+                    state = (state as HSM).CurrentState;
+                }
+                if (state != null)
+                    CurrentState = state.Name;
+
                 yield return new WaitForSeconds(ReactionTime);
             }
         }
@@ -86,13 +100,13 @@ namespace Assets.Behaviors
             {
                 // food case
                 case GoalName.Food:
-                    if (gameObject.GetComponent<ZebraSearchFood>().Status == SearchingStatus.Arrived)
+                    if (gameObject.GetComponent<ZebraSearchFood>().Status == SearchingResourceStatus.Arrived)
                         return true;
                     break;
 
                 // water case
                 case GoalName.Water:
-                    if (gameObject.GetComponent<ZebraSearchWater>().Status == SearchingStatus.Arrived)
+                    if (gameObject.GetComponent<ZebraSearchWater>().Status == SearchingResourceStatus.Arrived)
                         return true;
                     break;
             }
@@ -138,6 +152,19 @@ namespace Assets.Behaviors
             int water = gameObject.GetComponent<Zebra>().Water;
 
             if (food > 80 && water > 80)
+                return true;
+
+            return false;
+        }
+
+        // check if current primary needs have low values
+        private bool LowPrimaryNeedLevels()
+        {
+            // TODO: add energy
+            int food = gameObject.GetComponent<Zebra>().Food;
+            int water = gameObject.GetComponent<Zebra>().Water;
+
+            if (food < 40 || water < 40)
                 return true;
 
             return false;
