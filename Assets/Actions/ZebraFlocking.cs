@@ -57,6 +57,7 @@ namespace Assets.Actions
 
         private void Flocking()
         {
+            // TODO: considerare solo le zebre che sono nello stato happiness
             int zebrasNumber = CurrentFOV.CurrentZebrasNumber;
             Vector3 posAvg = Vector3.zero;
             Vector3 dirAvg = Vector3.zero;

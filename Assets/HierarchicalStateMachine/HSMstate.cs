@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +8,7 @@ namespace Assets.HierarchicalStateMachine
     public class HSMstate
     {
         // state name -> for sanity
-        public string Name;
+        public Enum Name;
 
         // list of actions to perform based on transitions fire or not
         public List<HSMaction> EnterActions = new List<HSMaction>();
@@ -24,7 +25,7 @@ namespace Assets.HierarchicalStateMachine
         // parent state of the current one
         public HSMstate ParentState;
 
-        public HSMstate(string name, int hierarchyLevel)
+        public HSMstate(Enum name, int hierarchyLevel)
         {
             Name = name;
             Links = new Dictionary<HSMtransition, HSMstate>();

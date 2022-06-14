@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Assets.GoalOrientedBehavior;
+using Assets.Behaviors;
 
 namespace Assets.FOV
 {
@@ -210,12 +211,44 @@ namespace Assets.FOV
             return zebras;
         }
 
+        // check if there are other zebras in FOV
         public bool ZebrasInFOV()
         {
             if (CurrentZebrasNumber > 0)
                 return true;
 
             return false;
+        }
+
+        public bool ZebraForReproductionInFOV()
+        {
+            for (int i = 0; i < ObjectsInFOV.Count; i++)
+            {
+                Zebra zebra = ObjectsInFOV[i].GetComponent<Zebra>();
+                if (zebra != null && zebra.Sociality >= 80)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public GameObject GetNearerZebraForReproduction()
+        {
+            Vector3 currentPosition = gameObject.transform.position;
+            GameObject nearer = null;
+            float distance = float.PositiveInfinity;
+
+            for (int i = 0; i < ObjectsInFOV.Count; i++)
+            {
+                float dist = Vector3.Distance(currentPosition, ObjectsInFOV[i].transform.position);
+                if (ObjectsInFOV[i].GetComponent<Zebra>() != null && ObjectsInFOV[i].GetComponent<ZebraBehavior>().CurrentState == StateName.Reproduction && dist < distance)
+                {
+                    nearer = ObjectsInFOV[i];
+                    distance = dist;
+                }
+            }
+
+            return nearer;
         }
     }
 }

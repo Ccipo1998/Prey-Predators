@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace Assets.HierarchicalStateMachine
 {
+    public enum ProvaState
+    {
+        A, B, C, D, E, F,
+        HSM
+    }
+
     public class prova : MonoBehaviour
     {
         private HSM hsm;
@@ -10,12 +16,12 @@ namespace Assets.HierarchicalStateMachine
         // Use this for initialization
         void Start()
         {
-            HSMstate A = new HSMstate("A", 2);
-            HSMstate B = new HSMstate("B", 2);
-            HSM C = new HSM("C", B, 1);
-            HSMstate D = new HSMstate("D", 1);
-            HSMstate E = new HSMstate("E", 1);
-            HSMstate F = new HSMstate("F", 1);
+            HSMstate A = new HSMstate(ProvaState.A, 2);
+            HSMstate B = new HSMstate(ProvaState.B, 2);
+            HSM C = new HSM(ProvaState.C, B, 1);
+            HSMstate D = new HSMstate(ProvaState.D, 1);
+            HSMstate E = new HSMstate(ProvaState.E, 1);
+            HSMstate F = new HSMstate(ProvaState.F, 1);
 
             HSMtransition prima = new HSMtransition("uno", uno);
             B.AddTransition(prima, A);
@@ -44,7 +50,7 @@ namespace Assets.HierarchicalStateMachine
             A.AddParent(C);
             B.AddParent(C);
 
-            hsm = new HSM("HSM", C, 0);
+            hsm = new HSM(ProvaState.HSM, C, 0);
 
             C.AddParent(hsm);
             D.AddParent(hsm);

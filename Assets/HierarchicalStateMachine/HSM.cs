@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,12 +13,12 @@ namespace Assets.HierarchicalStateMachine
         // current state
         public HSMstate CurrentState;
 
-        public HSM(string name, HSMstate initialState, int hierarchyLevel) : base(name, hierarchyLevel)
+        public HSM(Enum name, HSMstate initialState, int hierarchyLevel) : base(name, hierarchyLevel)
         {
             InitialState = initialState;
         }
 
-        public HSM(string name, HSM initialState, int hierarchyLevel) : base(name, hierarchyLevel)
+        public HSM(Enum name, HSM initialState, int hierarchyLevel) : base(name, hierarchyLevel)
         {
             InitialState = initialState;
         }

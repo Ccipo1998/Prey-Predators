@@ -4,65 +4,82 @@ using Assets.HierarchicalStateMachine;
 using Assets.Species;
 using Assets.Actions;
 using Assets.GoalOrientedBehavior;
+using Assets.FOV;
 
 namespace Assets.Behaviors
 {
+    public enum StateName
+    {
+        Search, SatisfyNeed, Happiness, Reproduction, Comfort, RunAway, Death,
+        Survive, Live, Welfare,
+        ZebraHSM
+    }
+
     public class ZebraBehavior : MonoBehaviour
     {
         private HSM ZebraHSM;
         public float ReactionTime = 1f;
-        public string CurrentState;
+        public StateName CurrentState;
 
         // Use this for initialization
         void Start()
         {
             // basic states
-            HSMstate RunAway = new HSMstate("RunAway", 1);
-            HSMstate Death = new HSMstate("Death", 1);
-            HSMstate Happiness = new HSMstate("Happiness", 3);
-            HSMstate Reproduce = new HSMstate("Reproduce", 3);
-            HSMstate Comfort = new HSMstate("Comfort", 3);
-            HSMstate Search = new HSMstate("Search", 3);
-            HSMstate SatisfyNeed = new HSMstate("Satisfy Need", 3);
+            HSMstate RunAway = new HSMstate(StateName.RunAway, 1);
+            HSMstate Death = new HSMstate(StateName.Death, 1);
+            HSMstate Happiness = new HSMstate(StateName.Happiness, 3);
+            HSMstate Reproduction = new HSMstate(StateName.Reproduction, 3);
+            HSMstate Comfort = new HSMstate(StateName.Comfort, 3);
+            HSMstate Search = new HSMstate(StateName.Search, 3);
+            HSMstate SatisfyNeed = new HSMstate(StateName.SatisfyNeed, 3);
 
             // HSM states
-            HSM Survive = new HSM("Survive", Search, 2);
-            HSM Live = new HSM("Live", Survive, 1);
-            HSM Welfare = new HSM("Welfare", Happiness, 2);
+            HSM Survive = new HSM(StateName.Survive, Search, 2);
+            HSM Live = new HSM(StateName.Live, Survive, 1);
+            HSM Welfare = new HSM(StateName.Welfare, Happiness, 2);
 
             // state actions
             //Survive.StayActions.Add(gameObject.GetComponent<Zebra>().Survive);
+            Live.EnterActions.Add(gameObject.GetComponent<Zebra>().SocialityBehaviorEnter);
+            Live.ExitActions.Add(gameObject.GetComponent<Zebra>().SocialityBehaviorExit);
             Search.StayActions.Add(gameObject.GetComponent <Zebra>().Search);
             Search.ExitActions.Add(gameObject.GetComponent<Zebra>().SearchExit);
             Search.EnterActions.Add(gameObject.GetComponent<Zebra>().SearchEnter);
             SatisfyNeed.EnterActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedEnter);
             SatisfyNeed.ExitActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedExit);
             Welfare.EnterActions.Add(gameObject.GetComponent<Zebra>().WelfareEnter);
-            Happiness.StayActions.Add(gameObject.GetComponent<Zebra>().Happiness);
+            Happiness.EnterActions.Add(gameObject.GetComponent<Zebra>().HappinessEnter);
+            Happiness.ExitActions.Add(gameObject.GetComponent<Zebra>().HappinessExit);
+            Reproduction.EnterActions.Add(gameObject.GetComponent<Zebra>().ReproductionEnter);
+            Reproduction.ExitActions.Add(gameObject.GetComponent<Zebra>().ReproductionExit);
 
             // transitions
             HSMtransition CanSatisfyTran = new HSMtransition("Can satisfy", CanSatisfy);
             HSMtransition DoneTran = new HSMtransition("Done", Done);
             HSMtransition HighPrimaryNeedsLevelsTran = new HSMtransition("High primary needs levels", HighPrimaryNeedLevels);
             HSMtransition LowPrimaryNeedsLevelsTran = new HSMtransition("Low primary needs levels", LowPrimaryNeedLevels);
+            HSMtransition HighSocialityAndZebraInFOVTran = new HSMtransition("High sociality and Zebra in FOV", HighSocialityAndZebraInFOV);
+            HSMtransition LowSocialityOrNoZebraInFOVTran = new HSMtransition("Low sociality or no Zebra in FOV", LowSocialityOrNoZebraInFOV);
 
             // transitions links
             Search.AddTransition(CanSatisfyTran, SatisfyNeed);
             SatisfyNeed.AddTransition(DoneTran, Search);
             Survive.AddTransition(HighPrimaryNeedsLevelsTran, Welfare);
             Welfare.AddTransition(LowPrimaryNeedsLevelsTran, Survive);
+            Happiness.AddTransition(HighSocialityAndZebraInFOVTran, Reproduction);
+            Reproduction.AddTransition(LowSocialityOrNoZebraInFOVTran, Happiness);
 
             // parents
             Welfare.AddParent(Live);
             Survive.AddParent(Live);
             Happiness.AddParent(Welfare);
-            Reproduce.AddParent(Welfare);
+            Reproduction.AddParent(Welfare);
             Comfort.AddParent(Welfare);
             Search.AddParent(Survive);
             SatisfyNeed.AddParent(Survive);
 
             // create the HSM for the Zebra
-            ZebraHSM = new HSM("ZebraHSM", Live, 0);
+            ZebraHSM = new HSM(StateName.ZebraHSM, Live, 0);
 
             // launch HSM
             StartCoroutine(Think());
@@ -81,7 +98,7 @@ namespace Assets.Behaviors
                     state = (state as HSM).CurrentState;
                 }
                 if (state != null)
-                    CurrentState = state.Name;
+                    CurrentState = (StateName)state.Name;
 
                 yield return new WaitForSeconds(ReactionTime);
             }
@@ -165,6 +182,29 @@ namespace Assets.Behaviors
             int water = gameObject.GetComponent<Zebra>().Water;
 
             if (food < 40 || water < 40)
+                return true;
+
+            return false;
+        }
+
+        // check if sociality value is high
+        private bool HighSocialityAndZebraInFOV()
+        {
+            int sociality = gameObject.GetComponent<Zebra>().Sociality;
+            bool zebraInFOV = gameObject.GetComponent<ZebraFOV>().ZebraForReproductionInFOV();
+
+            if (sociality >= 80 && zebraInFOV)
+                return true;
+
+            return false;
+        }
+
+        // check if sociality value is low
+        private bool LowSocialityOrNoZebraInFOV()
+        {
+            int sociality = gameObject.GetComponent<Zebra>().Sociality;
+
+            if (sociality < 50)
                 return true;
 
             return false;

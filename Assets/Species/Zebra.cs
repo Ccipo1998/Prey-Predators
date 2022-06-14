@@ -8,7 +8,7 @@ using Assets.Actions;
 using System.Collections.Generic;
 
 namespace Assets.Species
-{
+{// TODO: sistemare divisione tra StayActions e bahaviors
     public class Zebra : Animal
     {
         public Zebra()
@@ -321,6 +321,18 @@ namespace Assets.Species
 
         #region HSM_FUNCTIONS
 
+        // Enter() function of the Live state
+        public void SocialityBehaviorEnter()
+        {
+            gameObject.GetComponent<ZebraSociality>().enabled = true;
+        }
+
+        // Exit() function of the Live state
+        public void SocialityBehaviorExit()
+        {
+            gameObject.GetComponent<ZebraSociality>().enabled = false;
+        }
+
         // Stay() function of the Search state
         public void Search()
         {
@@ -403,16 +415,32 @@ namespace Assets.Species
             CurrentGoal = null;
         }
 
-        public void Happiness()
+        // Stay() function for Happiness state
+        public void HappinessEnter()
         {
             // flocking behavior
             gameObject.GetComponent<ZebraFlocking>().enabled = true;
         }
 
+        // Exit() function for Happiness state
         public void HappinessExit()
         {
             // stop flocking behavior
             gameObject.GetComponent<ZebraFlocking>().enabled = false;
+        }
+
+        // Enter() function for Reproduce state
+        public void ReproductionEnter()
+        {
+            // reproduction behavior
+            gameObject.GetComponent<ZebraReproduction>().enabled = true;
+        }
+
+        // Exit() function for Reproduce state
+        public void ReproductionExit()
+        {
+            // reproduction behavior
+            gameObject.GetComponent<ZebraReproduction>().enabled = false;
         }
 
         #endregion HSM_FUNCTIONS
