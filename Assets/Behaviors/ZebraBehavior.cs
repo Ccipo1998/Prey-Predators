@@ -38,8 +38,7 @@ namespace Assets.Behaviors
             HSM Live = new HSM(StateName.Live, Survive, 1);
             HSM Welfare = new HSM(StateName.Welfare, Happiness, 2);
 
-            // state actions
-            //Survive.StayActions.Add(gameObject.GetComponent<Zebra>().Survive);
+            // state actions -> IMPORTANT: upper-states exit functions MUST have all the sub-states exit functions
             Live.EnterActions.Add(gameObject.GetComponent<Zebra>().SocialityBehaviorEnter);
             Live.ExitActions.Add(gameObject.GetComponent<Zebra>().SocialityBehaviorExit);
             Search.StayActions.Add(gameObject.GetComponent <Zebra>().Search);
@@ -47,7 +46,9 @@ namespace Assets.Behaviors
             Search.EnterActions.Add(gameObject.GetComponent<Zebra>().SearchEnter);
             SatisfyNeed.EnterActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedEnter);
             SatisfyNeed.ExitActions.Add(gameObject.GetComponent<Zebra>().SatisfyNeedExit);
+            Survive.ExitActions.Add(gameObject.GetComponent<Zebra>().SurviveExit);
             Welfare.EnterActions.Add(gameObject.GetComponent<Zebra>().WelfareEnter);
+            Welfare.ExitActions.Add(gameObject.GetComponent<Zebra>().WelfareExit);
             Happiness.EnterActions.Add(gameObject.GetComponent<Zebra>().HappinessEnter);
             Happiness.ExitActions.Add(gameObject.GetComponent<Zebra>().HappinessExit);
             Reproduction.EnterActions.Add(gameObject.GetComponent<Zebra>().ReproductionEnter);

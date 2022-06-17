@@ -408,6 +408,13 @@ namespace Assets.Species
             CurrentGoal = null;
         }
 
+        public void SurviveExit()
+        {
+            // exit function for enclosing states performs all the exit actions of the enclosed states
+            SearchExit();
+            SatisfyNeedExit();
+        }
+
         // Enter() function of Welfare state
         public void WelfareEnter()
         {
@@ -441,6 +448,13 @@ namespace Assets.Species
         {
             // reproduction behavior
             gameObject.GetComponent<ZebraReproduction>().enabled = false;
+        }
+
+        public void WelfareExit()
+        {
+            // exit function for enclosing states performs all the exit actions of the enclosed states
+            HappinessExit();
+            ReproductionExit();
         }
 
         #endregion HSM_FUNCTIONS
