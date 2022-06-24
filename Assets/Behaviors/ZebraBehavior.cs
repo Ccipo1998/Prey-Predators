@@ -204,8 +204,9 @@ namespace Assets.Behaviors
         private bool LowSocialityOrNoZebraInFOV()
         {
             int sociality = gameObject.GetComponent<Zebra>().Sociality;
+            bool zebraInFOV = gameObject.GetComponent<ZebraFOV>().ZebraForReproductionInFOV();
 
-            if (sociality < 50)
+            if (sociality < 50 || !zebraInFOV)
                 return true;
 
             return false;

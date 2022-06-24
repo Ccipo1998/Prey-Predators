@@ -9,7 +9,7 @@ namespace Assets.Actions
 {
     public enum ReproductionStatus
     {
-        SearchingPartner, CheckingPartner, ApproachingPartner, Reproducing
+        SearchingPartner, ApproachingPartner, Reproducing
     }
 
     public class ZebraReproduction : MonoBehaviour
@@ -37,6 +37,7 @@ namespace Assets.Actions
         }
 
         // Update is called once per frame
+        // TODO: FIX REPRODUCTION
         void Update()
         {
             Vector3 CurrentPosition = gameObject.transform.position;
@@ -49,32 +50,41 @@ namespace Assets.Actions
                     if (potentialPartner != null)
                     {
                         Partner = potentialPartner;
-                        Status = ReproductionStatus.CheckingPartner;
-                    }
-
-                    break;
-
-                case ReproductionStatus.CheckingPartner:
-
-                    if (Partner.GetComponent<ZebraReproduction>().Partner == gameObject)
                         Status = ReproductionStatus.ApproachingPartner;
+                    }
 
                     break;
 
                 case ReproductionStatus.ApproachingPartner:
 
-                    float distance = Vector3.Distance(CurrentPosition, Partner.transform.position);
-                    if (distance < CurrentNavMeshAgent.stoppingDistance)
+                    // first check if partner is still available
+                    if (Partner.GetComponent<ZebraReproduction>().Partner == gameObject)
                     {
+                        float distance = Vector3.Distance(CurrentPosition, Partner.transform.position);
+                        if (distance <= CurrentNavMeshAgent.stoppingDistance + Mathf.Epsilon)
+                        {
+                            CurrentNavMeshAgent.ResetPath();
+                            Status = ReproductionStatus.Reproducing;
+                        }
+                        else if (!CurrentNavMeshAgent.hasPath)
+                        {
+                            Vector3 dest = (Partner.transform.position + gameObject.transform.position) / 2;
+                            //dest.Set(dest.x - CurrentNavMeshAgent.stoppingDistance, dest.y - CurrentNavMeshAgent.stoppingDistance, dest.z - CurrentNavMeshAgent.stoppingDistance);
+                            CurrentNavMeshAgent.destination = dest;
+                        }
+                    }
+                    else
+                    {
+                        Status = ReproductionStatus.SearchingPartner;
                         CurrentNavMeshAgent.ResetPath();
-                        Status = ReproductionStatus.Reproducing;
+                        Partner = null;
                     }
-                    else if (!CurrentNavMeshAgent.hasPath)
+                    /*
+                    else
                     {
-                        Vector3 dest = (Partner.transform.position + gameObject.transform.position) / 2;
-                        dest.Set(dest.x - CurrentNavMeshAgent.stoppingDistance, dest.y - CurrentNavMeshAgent.stoppingDistance, dest.z - CurrentNavMeshAgent.stoppingDistance);
-                        CurrentNavMeshAgent.destination = dest;
+                        Status = ReproductionStatus.SearchingPartner;
                     }
+                    */
 
                     break;
 
@@ -86,6 +96,7 @@ namespace Assets.Actions
                     {
                         // questa zebra si riproduce
                         GameObject zebraClone = Instantiate(gameObject);
+                        zebraClone.GetComponent<Zebra>().Sociality = 50;
                         zebraClone.transform.position = gameObject.transform.position + gameObject.transform.right * 1.5f;
                     }
 
