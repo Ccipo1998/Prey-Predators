@@ -4,18 +4,24 @@ using UnityEngine;
 
 namespace Assets.Resources
 {
+    [System.Serializable]
     public class ResourceSpot
     {
-        // position of the spot
-        public Vector3 Position;
+        // empty gameobject for the position of the spot
+        public GameObject SpotObject;
         // currently free or occupied spot
-        public bool IsFree;
+        public bool IsFree = true;
         // list of object in queue for this spot
         private List<GameObject> Queue = new List<GameObject>();
 
-        public ResourceSpot(Vector3 position)
+        public Vector3 Position
         {
-            Position = position;
+            get { return SpotObject.transform.position; }
+        }
+
+        public ResourceSpot(GameObject spotObject)
+        {
+            SpotObject = spotObject;
             IsFree = true;
         }
 
@@ -32,6 +38,9 @@ namespace Assets.Resources
         // add an object in the queue for the spot
         public void ToQueue(GameObject objectToQueue)
         {
+            if (Queue == null)
+                Queue = new List<GameObject>();
+
             Queue.Add(objectToQueue);
         }
 

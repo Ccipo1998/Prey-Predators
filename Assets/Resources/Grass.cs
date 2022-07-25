@@ -14,7 +14,8 @@ namespace Assets.Resources
         // Use this for initialization
         void Start()
         {
-            CreateSpots();
+            if (SpotsGeneration)
+                CreateSpots();
 
             // grass growing
             InvokeRepeating("Grow", 1, 2);

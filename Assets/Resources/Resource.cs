@@ -15,9 +15,14 @@ namespace Assets.Resources
         public float SpotDistance = 2.0f;
         // the list of spots for eating
         public List<ResourceSpot> SpotList;
+        // automatic spot creation flag
+        public bool SpotsGeneration = false;
 
         public void CreateSpots()
         {
+            // empty object creation
+            //GameObject empty = new GameObject();
+
             // create the list of positions where animals can go to eat/drink
             Transform currentTransform = gameObject.transform;
             SpotList = new List<ResourceSpot>();
@@ -25,7 +30,10 @@ namespace Assets.Resources
             for (int i = 0; i < SpotNumber; i++)
             {
                 currentTransform.Rotate(currentTransform.up, (float)(360 / SpotNumber));
-                SpotList.Add(new ResourceSpot(currentTransform.position + gameObject.transform.forward * SpotDistance));
+                // SpotList.Add(new ResourceSpot(currentTransform.position + gameObject.transform.forward * SpotDistance));
+                var spot = Instantiate(GameObject.FindGameObjectWithTag("Spot"));
+                spot.transform.position = currentTransform.position + gameObject.transform.forward * SpotDistance;
+                SpotList.Add(new ResourceSpot(spot));
             }
         }
 

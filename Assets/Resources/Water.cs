@@ -13,7 +13,8 @@ namespace Assets.Resources
 
         private void Start()
         {
-            CreateSpots();
+            if (SpotsGeneration)
+                CreateSpots();
         }
     }
 }

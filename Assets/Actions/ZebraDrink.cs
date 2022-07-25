@@ -26,7 +26,7 @@ namespace Assets.Actions
         {
             while (CurrentZebra.Water < ResourceTarget && !ResourceToConsume.GetComponent<Resource>().IsOver())
             {
-                ResourceToConsume.GetComponent<Resource>().Consume(1);
+                //ResourceToConsume.GetComponent<Resource>().Consume(1);
                 gameObject.GetComponent<Zebra>().Drink(1);
 
                 yield return new WaitForSeconds(1 / ConsumeVelocity);
