@@ -9,10 +9,12 @@ namespace Assets.Editor
     public class GrassEditor : UnityEditor.Editor
     {
         SerializedProperty SpotList;
+        SerializedProperty SpotPrefab;
 
         void OnEnable()
         {
             SpotList = serializedObject.FindProperty("SpotList");
+            SpotPrefab = serializedObject.FindProperty("SpotPrefab");
         }
 
         public override void OnInspectorGUI()
@@ -31,7 +33,7 @@ namespace Assets.Editor
                 var item = SpotList.GetArrayElementAtIndex(SpotList.arraySize - 1);
                 var spot = item.FindPropertyRelative("SpotObject");
                 var free = item.FindPropertyRelative("IsFree");
-                var obj = Instantiate(GameObject.FindGameObjectWithTag("Spot"));
+                var obj = Instantiate((GameObject)SpotPrefab.objectReferenceValue);
                 obj.transform.position = ((Grass)target).gameObject.transform.position;
                 spot.objectReferenceValue = obj;
                 free.boolValue = true;
@@ -57,10 +59,12 @@ namespace Assets.Editor
     public class WaterEditor : UnityEditor.Editor
     {
         SerializedProperty SpotList;
+        SerializedProperty SpotPrefab;
 
         void OnEnable()
         {
             SpotList = serializedObject.FindProperty("SpotList");
+            SpotPrefab = serializedObject.FindProperty("SpotPrefab");
         }
 
         public override void OnInspectorGUI()
@@ -79,8 +83,9 @@ namespace Assets.Editor
                 var item = SpotList.GetArrayElementAtIndex(SpotList.arraySize - 1);
                 var spot = item.FindPropertyRelative("SpotObject");
                 var free = item.FindPropertyRelative("IsFree");
-                var obj = Instantiate(GameObject.FindGameObjectWithTag("Spot"));
-                obj.transform.position = ((Water)target).gameObject.transform.position;
+                var obj = Instantiate((GameObject)SpotPrefab.objectReferenceValue);
+                obj.transform.position = new Vector3(((Water)target).gameObject.transform.position.x, .5f, ((Water)target).gameObject.transform.position.z);
+                obj.transform.parent = ((Water)target).gameObject.transform;
                 spot.objectReferenceValue = obj;
                 free.boolValue = true;
 

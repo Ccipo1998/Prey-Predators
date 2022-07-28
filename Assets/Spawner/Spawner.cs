@@ -8,27 +8,27 @@ using Assets.Actions;
 public class Spawner : MonoBehaviour
 {
     public int SpawnNumber = 2;
+    public GameObject ZebraPrefab;
+
+    private static GameObject ZebraPrefab_copy;
 
     // Use this for initialization
     void Start()
     {
-        GameObject Zebra = GameObject.FindGameObjectWithTag("Zebra");
-        //Zebra.GetComponent<Rigidbody>().transform.position = Vector3.zero + new Vector3(0.0f, 1.0f, 0.0f);
+        ZebraPrefab_copy = ZebraPrefab;
 
-        // adding all the components
-        //Zebra.AddComponent<Zebra>();
-        //Zebra.AddComponent<GOB>();
-        //Zebra.AddComponent<ZebraGOB>();
-        //Zebra.AddComponent<ZebraBehavior>();
-
-            
-        for (int i = 1; i < SpawnNumber; i++)
+        for (int i = 0; i < SpawnNumber; i++)
         {
-            GameObject zebraClone = Instantiate(Zebra);
-            zebraClone.transform.position = Zebra.transform.position + new Vector3((float)i * 2, 1.0f, 0.0f);
+            GameObject zebraClone = Instantiate(ZebraPrefab);
+            zebraClone.transform.position = new Vector3(8f, .5f, 3f) + new Vector3((float)i * 2, 1.0f, 0.0f);
             zebraClone.transform.rotation = Quaternion.AngleAxis(Random.Range(0.0f, 360.0f), zebraClone.transform.up);
         }
             
+    }
+
+    public static GameObject GetZebraPrefab()
+    {
+        return ZebraPrefab_copy;
     }
 
     // reset zebra parameters: both properties and behaviors/actions

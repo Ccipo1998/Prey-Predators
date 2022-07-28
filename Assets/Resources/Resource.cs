@@ -17,6 +17,8 @@ namespace Assets.Resources
         public List<ResourceSpot> SpotList;
         // automatic spot creation flag
         public bool SpotsGeneration = false;
+        // spot prefab
+        public GameObject SpotPrefab;
 
         public void CreateSpots()
         {
@@ -24,15 +26,15 @@ namespace Assets.Resources
             //GameObject empty = new GameObject();
 
             // create the list of positions where animals can go to eat/drink
-            Transform currentTransform = gameObject.transform;
             SpotList = new List<ResourceSpot>();
+            Vector3 pos = gameObject.transform.position + gameObject.transform.forward * SpotDistance;
             // spots are around the food object
             for (int i = 0; i < SpotNumber; i++)
             {
-                currentTransform.Rotate(currentTransform.up, (float)(360 / SpotNumber));
-                // SpotList.Add(new ResourceSpot(currentTransform.position + gameObject.transform.forward * SpotDistance));
-                var spot = Instantiate(GameObject.FindGameObjectWithTag("Spot"));
-                spot.transform.position = currentTransform.position + gameObject.transform.forward * SpotDistance;
+                var spot = Instantiate(SpotPrefab);
+                spot.transform.position = pos;
+                spot.transform.parent = gameObject.transform;
+                gameObject.transform.Rotate(gameObject.transform.up, (float)(360 / SpotNumber));
                 SpotList.Add(new ResourceSpot(spot));
             }
         }

@@ -95,9 +95,9 @@ namespace Assets.Actions
                     if (gameObject.GetComponent<Zebra>().Energy > 60 && Partner.GetComponent<Zebra>().Energy > 60)
                     {
                         // this zebra reproduce
-                        GameObject zebraClone = Instantiate(gameObject);
+                        GameObject zebraClone = Instantiate(Spawner.GetZebraPrefab());
                         zebraClone.transform.position = gameObject.transform.position + gameObject.transform.right * 1.5f;
-                        Spawner.ResetZebra(zebraClone);
+                        //Spawner.ResetZebra(zebraClone);
 
                         gameObject.GetComponent<Zebra>().Energy -= 20;
                         Partner.GetComponent<Zebra>().Energy -= 20;
