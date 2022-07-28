@@ -7,7 +7,7 @@ using UnityEngine.AI;
 
 namespace Assets.Actions
 {
-    // TODO: creare azione SearchFlock, utilizzabile sia da Leoni che da Zebre (fanno la stessa cosa) <- CREDO servirà un FOV comune sia per ZebraFOV che per LeoneFOV
+    // TODO: creare azione ZebraFlocking (fatto), utilizzabile sia da Leoni che da Zebre (fanno la stessa cosa) <- CREDO servirà un FOV comune sia per ZebraFOV che per LeoneFOV
     public class ZebraSearchFlock : MonoBehaviour
     {
         // static components

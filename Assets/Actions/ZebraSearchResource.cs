@@ -131,6 +131,7 @@ namespace Assets.Actions
                         CurrentNavMeshAgent.destination = CurrentNearerFreeSpot.Position;
 
                         // if near to free spot -> request the spot
+                        //if (CurrentNavMeshAgent.velocity == Vector3.zero)
                         if (IsNearFreeSpot())
                         {
                             if (!InQueue)

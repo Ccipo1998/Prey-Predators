@@ -16,8 +16,6 @@ namespace Assets.Actions
         public GameObject ResourceToConsume;
         // the current spot assegned to the animal basing on current position
         public ResourceSpot AssignedSpot;
-        // drink rate
-        public float ConsumeVelocity = 1.0f;
         // status
         public ConsumingStatus Status;
         // choosen coroutine

@@ -29,7 +29,7 @@ namespace Assets.Behaviors
             HSMstate Death = new HSMstate(StateName.Death, 1);
             HSMstate Happiness = new HSMstate(StateName.Happiness, 3);
             HSMstate Reproduction = new HSMstate(StateName.Reproduction, 3);
-            HSMstate Comfort = new HSMstate(StateName.Comfort, 3);
+            //HSMstate Comfort = new HSMstate(StateName.Comfort, 3);
             HSMstate Search = new HSMstate(StateName.Search, 3);
             HSMstate SatisfyNeed = new HSMstate(StateName.SatisfyNeed, 3);
 
@@ -59,23 +59,23 @@ namespace Assets.Behaviors
             HSMtransition DoneTran = new HSMtransition("Done", Done);
             HSMtransition HighPrimaryNeedsLevelsTran = new HSMtransition("High primary needs levels", HighPrimaryNeedLevels);
             HSMtransition LowPrimaryNeedsLevelsTran = new HSMtransition("Low primary needs levels", LowPrimaryNeedLevels);
-            HSMtransition HighSocialityAndZebraInFOVTran = new HSMtransition("High sociality and Zebra in FOV", HighSocialityAndZebraInFOV);
-            HSMtransition LowSocialityOrNoZebraInFOVTran = new HSMtransition("Low sociality or no Zebra in FOV", LowSocialityOrNoZebraInFOV);
+            HSMtransition CanReproduceTran = new HSMtransition("Can reproduce", CanReproduce);
+            HSMtransition CannotReproduceTran = new HSMtransition("CannotReproduce", CannotReproduce);
 
             // transitions links
             Search.AddTransition(CanSatisfyTran, SatisfyNeed);
             SatisfyNeed.AddTransition(DoneTran, Search);
             Survive.AddTransition(HighPrimaryNeedsLevelsTran, Welfare);
             Welfare.AddTransition(LowPrimaryNeedsLevelsTran, Survive);
-            Happiness.AddTransition(HighSocialityAndZebraInFOVTran, Reproduction);
-            Reproduction.AddTransition(LowSocialityOrNoZebraInFOVTran, Happiness);
+            Happiness.AddTransition(CanReproduceTran, Reproduction);
+            Reproduction.AddTransition(CannotReproduceTran, Happiness);
 
             // parents
             Welfare.AddParent(Live);
             Survive.AddParent(Live);
             Happiness.AddParent(Welfare);
             Reproduction.AddParent(Welfare);
-            Comfort.AddParent(Welfare);
+            //Comfort.AddParent(Welfare);
             Search.AddParent(Survive);
             SatisfyNeed.AddParent(Survive);
 
@@ -188,25 +188,27 @@ namespace Assets.Behaviors
             return false;
         }
 
-        // check if sociality value is high
-        private bool HighSocialityAndZebraInFOV()
+        // check if the zebra has: high sociality and high energy and other zebra for reproduction in FOV
+        private bool CanReproduce()
         {
             int sociality = gameObject.GetComponent<Zebra>().Sociality;
+            int energy = gameObject.GetComponent<Zebra>().Energy;
             bool zebraInFOV = gameObject.GetComponent<ZebraFOV>().ZebraForReproductionInFOV();
 
-            if (sociality >= 80 && zebraInFOV)
+            if (sociality >= 80 && energy > 60 && zebraInFOV)
                 return true;
 
             return false;
         }
 
-        // check if sociality value is low
-        private bool LowSocialityOrNoZebraInFOV()
+        // check if the zebra has: low energy or no other zebra for reproduction in FOV
+        private bool CannotReproduce()
         {
             int sociality = gameObject.GetComponent<Zebra>().Sociality;
+            int energy = gameObject.GetComponent<Zebra>().Energy;
             bool zebraInFOV = gameObject.GetComponent<ZebraFOV>().ZebraForReproductionInFOV();
 
-            if (sociality < 50 || !zebraInFOV)
+            if (energy <= 60 || !zebraInFOV)
                 return true;
 
             return false;

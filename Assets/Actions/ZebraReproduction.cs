@@ -16,24 +16,26 @@ namespace Assets.Actions
     {
         // reproduction parameters
         public GameObject Partner;
-        private bool Reproduced;
+        //private bool Reproduced;
 
         // static parameters
         private ReproductionStatus Status;
         private ZebraFOV CurrentFOV;
         private NavMeshAgent CurrentNavMeshAgent;
 
+        /*
         public bool IsReproduced()
         {
             return Reproduced;
         }
+        */
 
         private void OnEnable()
         {
             CurrentFOV = GetComponent<ZebraFOV>();
             CurrentNavMeshAgent = GetComponent<NavMeshAgent>();
             Status = ReproductionStatus.SearchingPartner;
-            Reproduced = false;
+            //Reproduced = false;
         }
 
         // Update is called once per frame
@@ -60,8 +62,8 @@ namespace Assets.Actions
                     // first check if partner is still available
                     if (Partner.GetComponent<ZebraReproduction>().Partner == gameObject)
                     {
-                        float distance = Vector3.Distance(CurrentPosition, Partner.transform.position);
-                        if (distance <= CurrentNavMeshAgent.stoppingDistance + Mathf.Epsilon)
+                        //float distance = Vector3.Distance(CurrentPosition, Partner.transform.position);
+                        if (CurrentNavMeshAgent.velocity == Vector3.zero && Partner.GetComponent<NavMeshAgent>().velocity == Vector3.zero)
                         {
                             CurrentNavMeshAgent.ResetPath();
                             Status = ReproductionStatus.Reproducing;
@@ -90,18 +92,34 @@ namespace Assets.Actions
 
                 case ReproductionStatus.Reproducing:
 
+                    if (gameObject.GetComponent<Zebra>().Energy > 60 && Partner.GetComponent<Zebra>().Energy > 60)
+                    {
+                        // this zebra reproduce
+                        GameObject zebraClone = Instantiate(gameObject);
+                        zebraClone.transform.position = gameObject.transform.position + gameObject.transform.right * 1.5f;
+                        Spawner.ResetZebra(zebraClone);
+
+                        gameObject.GetComponent<Zebra>().Energy -= 20;
+                        Partner.GetComponent<Zebra>().Energy -= 20;
+                    }
+
+                    /*
                     bool partnerReproduced = Partner.GetComponent<ZebraReproduction>().IsReproduced();
 
                     if (!partnerReproduced && !Reproduced)
                     {
-                        // questa zebra si riproduce
+                        // this zebra reproduce
                         GameObject zebraClone = Instantiate(gameObject);
                         zebraClone.GetComponent<Zebra>().Sociality = 50;
                         zebraClone.transform.position = gameObject.transform.position + gameObject.transform.right * 1.5f;
                     }
 
+                    // TODO: aggiungere possibilità secondo figlio
+
                     Reproduced = true;
-                    gameObject.GetComponent<Zebra>().Sociality /= 2;
+                    gameObject.GetComponent<Zebra>().Energy -= 20;
+                    //gameObject.GetComponent<Zebra>().Sociality /= 2;
+                    */
 
                     break;
             }

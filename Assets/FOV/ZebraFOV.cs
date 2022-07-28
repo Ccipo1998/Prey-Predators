@@ -211,6 +211,20 @@ namespace Assets.FOV
             return zebras;
         }
 
+        // get zebras in FOV that are wandering (not steady doing some actions)
+        public List<GameObject> GetMovingZebrasInFOV()
+        {
+            List<GameObject> zebras = new List<GameObject>();
+
+            for (int i = 0; i < ObjectsInFOV.Count; i++)
+            {
+                if (ObjectsInFOV[i].GetComponent<Zebra>() != null && (ObjectsInFOV[i].GetComponent<ZebraBehavior>().CurrentState == StateName.Happiness || ObjectsInFOV[i].GetComponent<ZebraBehavior>().CurrentState == StateName.Search))
+                    zebras.Add(ObjectsInFOV[i]);
+            }
+
+            return zebras;
+        }
+
         // check if there are other zebras in FOV
         public bool ZebrasInFOV()
         {
@@ -225,7 +239,7 @@ namespace Assets.FOV
             for (int i = 0; i < ObjectsInFOV.Count; i++)
             {
                 Zebra zebra = ObjectsInFOV[i].GetComponent<Zebra>();
-                if (zebra != null && zebra.Sociality >= 80)
+                if (zebra != null && zebra.Sociality >= 80 && zebra.Energy > 60)
                     return true;
             }
 

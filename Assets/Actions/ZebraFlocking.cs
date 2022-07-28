@@ -57,14 +57,13 @@ namespace Assets.Actions
 
         private void Flocking()
         {
-            // TODO: considerare solo le zebre che sono nello stato happiness
-            int zebrasNumber = CurrentFOV.CurrentZebrasNumber;
+            // for flocking only moving zebras are considered
             Vector3 posAvg = Vector3.zero;
             Vector3 dirAvg = Vector3.zero;
             Vector3 distAvg = Vector3.zero;
 
-            List<GameObject> zebras = CurrentFOV.GetZebrasInFOV();
-            for (int i = 0; i < zebrasNumber; i++)
+            List<GameObject> zebras = CurrentFOV.GetMovingZebrasInFOV();
+            for (int i = 0; i < zebras.Count; i++)
             {
                 posAvg += zebras[i].transform.position;
                 dirAvg += zebras[i].transform.forward;
@@ -74,8 +73,11 @@ namespace Assets.Actions
                     distAvg += (gameObject.transform.position - zebras[i].transform.position).normalized;
             }
 
-            posAvg /= zebrasNumber;
-            dirAvg /= zebrasNumber;
+            if (zebras.Count > 0)
+            {
+                posAvg /= zebras.Count;
+                dirAvg /= zebras.Count;
+            }
             //distAvg /= zebrasNumber;
 
             Vector3 v = gameObject.transform.forward.normalized;

@@ -35,7 +35,17 @@ namespace Assets.Species
         {
             // starting values
             Food = 50;
-            Water = 100;
+            Water = 50;
+            Space = 50;
+            Sociality = 50;
+            Energy = 100;
+        }
+
+        public void ResetNeeds()
+        {
+            // starting values
+            Food = 50;
+            Water = 50;
             Space = 50;
             Sociality = 50;
             Energy = 100;
@@ -49,6 +59,11 @@ namespace Assets.Species
         public void Drink(int quantity)
         {
             Water += quantity;
+        }
+
+        public void Effort(int quantity)
+        {
+            Energy -= quantity;
         }
     }
 

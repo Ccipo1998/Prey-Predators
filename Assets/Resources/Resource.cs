@@ -12,7 +12,7 @@ namespace Assets.Resources
         // the number of spots for this food
         public int SpotNumber = 4;
         // spots distance from the food object
-        public float SpotDistance = 2.0f;
+        public float SpotDistance = 1.1f;
         // the list of spots for eating
         public List<ResourceSpot> SpotList;
         // automatic spot creation flag

@@ -198,7 +198,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99924886}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.25, y: 0.8, z: 9.54}
+  m_LocalPosition: {x: 3.25, y: 0.8, z: 9.78}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -279,7 +279,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 127399157}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.12, y: 0.77, z: 18.76}
+  m_LocalPosition: {x: 10.43, y: 0.77, z: 18.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -360,7 +360,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 147849438}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.66, y: 0.74, z: 13.01}
+  m_LocalPosition: {x: 0.9, y: 0.74, z: 13.01}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -378,7 +378,6 @@ GameObject:
   - component: {fileID: 168130736}
   - component: {fileID: 168130735}
   - component: {fileID: 168130734}
-  - component: {fileID: 168130733}
   - component: {fileID: 168130731}
   - component: {fileID: 168130732}
   m_Layer: 3
@@ -418,25 +417,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Quantity: 50
   SpotNumber: 4
-  SpotDistance: 2
+  SpotDistance: 1.1
   SpotList: []
   SpotsGeneration: 1
---- !u!54 &168130733
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 168130730}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &168130734
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -537,6 +520,7 @@ GameObject:
   - component: {fileID: 423606113}
   - component: {fileID: 423606114}
   - component: {fileID: 423606112}
+  - component: {fileID: 423606115}
   m_Layer: 3
   m_Name: Zebra
   m_TagString: Zebra
@@ -627,7 +611,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 423606098}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 601939cfdb3af064797070d403e2da56, type: 3}
   m_Name: 
@@ -719,9 +703,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Food: 100
-  Water: 28
+  Water: 100
   Space: 50
-  Sociality: 80
+  Sociality: 99
   Energy: 100
   Type: 1
   FoodDecreaseRate: 25
@@ -761,10 +745,11 @@ MonoBehaviour:
   AssignedSpot:
     SpotObject: {fileID: 0}
     IsFree: 0
-  ConsumeVelocity: 1
   Status: 0
   ResourceTarget: 0
   CurrentZebra: {fileID: 0}
+  ConsumeVelocity: 1
+  EffortPerUnit: 0.5
 --- !u!114 &423606111
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -781,10 +766,11 @@ MonoBehaviour:
   AssignedSpot:
     SpotObject: {fileID: 0}
     IsFree: 0
-  ConsumeVelocity: 1
   Status: 0
   ResourceTarget: 0
   CurrentZebra: {fileID: 0}
+  ConsumeVelocity: 1
+  EffortPerUnit: 0.2
 --- !u!114 &423606112
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -824,6 +810,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Partner: {fileID: 0}
+--- !u!114 &423606115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 423606098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55882f9e2a0fd2a429ea2b8bea8cac0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  EffortVelocity: 0.5
+  EffortValue: 0.2
 --- !u!1 &433549180
 GameObject:
   m_ObjectHideFlags: 0
@@ -899,7 +899,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 433549180}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.69, y: 0.55, z: 9.38}
+  m_LocalPosition: {x: 5.69, y: 0.55, z: 9.73}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -980,7 +980,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 443751094}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.77, y: 0.74, z: 20.94}
+  m_LocalPosition: {x: 5.77, y: 0.74, z: 20.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1157,7 +1157,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 473197418}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.33, y: 0.7, z: 9.43}
+  m_LocalPosition: {x: 8.33, y: 0.7, z: 9.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1238,7 +1238,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 485234207}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.42, y: 0.57, z: 10.93}
+  m_LocalPosition: {x: 0.94, y: 0.57, z: 10.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1319,7 +1319,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 684378766}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3, y: 0.74, z: 20.92}
+  m_LocalPosition: {x: 3, y: 0.74, z: 20.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1493,7 +1493,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 738425887}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.63, y: 0.78, z: 18.22}
+  m_LocalPosition: {x: 0.96, y: 0.78, z: 18.22}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1574,7 +1574,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 835747556}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.24, y: 0.84, z: 15.52}
+  m_LocalPosition: {x: 10.43, y: 0.84, z: 15.52}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1655,7 +1655,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 859121325}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.17, y: 0.81, z: 11.77}
+  m_LocalPosition: {x: 10.5, y: 0.81, z: 11.77}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1673,7 +1673,6 @@ GameObject:
   - component: {fileID: 886773608}
   - component: {fileID: 886773607}
   - component: {fileID: 886773606}
-  - component: {fileID: 886773605}
   - component: {fileID: 886773604}
   - component: {fileID: 886773603}
   m_Layer: 3
@@ -1713,25 +1712,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Quantity: 50
   SpotNumber: 4
-  SpotDistance: 2
+  SpotDistance: 1.1
   SpotList: []
   SpotsGeneration: 1
---- !u!54 &886773605
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 886773602}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &886773606
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1984,7 +1967,6 @@ GameObject:
   - component: {fileID: 1018441694}
   - component: {fileID: 1018441693}
   - component: {fileID: 1018441692}
-  - component: {fileID: 1018441691}
   - component: {fileID: 1018441690}
   - component: {fileID: 1018441689}
   m_Layer: 3
@@ -2024,25 +2006,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Quantity: 50
   SpotNumber: 4
-  SpotDistance: 2
+  SpotDistance: 1.1
   SpotList: []
   SpotsGeneration: 1
---- !u!54 &1018441691
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1018441688}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!65 &1018441692
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2194,7 +2160,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1212746142}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.23, y: 0.89, z: 17.03}
+  m_LocalPosition: {x: 10.49, y: 0.89, z: 17.03}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2275,7 +2241,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1219110499}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.21, y: 0.77, z: 13.76}
+  m_LocalPosition: {x: 10.44, y: 0.77, z: 13.76}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2292,12 +2258,12 @@ GameObject:
   - component: {fileID: 1282232563}
   - component: {fileID: 1282232562}
   - component: {fileID: 1282232561}
-  - component: {fileID: 1282232559}
   - component: {fileID: 1282232558}
   - component: {fileID: 1282232564}
+  - component: {fileID: 1282232559}
   m_Layer: 3
   m_Name: Water
-  m_TagString: Untagged
+  m_TagString: Water
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2351,22 +2317,19 @@ MonoBehaviour:
   - SpotObject: {fileID: 1616879600}
     IsFree: 1
   SpotsGeneration: 0
---- !u!54 &1282232559
-Rigidbody:
+--- !u!65 &1282232559
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282232557}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
   serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
+  m_Size: {x: 0.99999994, y: 0.9999999, z: 0.99999994}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &1282232561
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2424,7 +2387,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282232557}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 5.69, y: 0.151, z: 15.12}
+  m_LocalPosition: {x: 5.69, y: 0.3, z: 15.12}
   m_LocalScale: {x: 8.178, y: 0.21864, z: 9.532}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2521,7 +2484,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1435347490}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.67, y: 0.82, z: 16.63}
+  m_LocalPosition: {x: 0.97, y: 0.82, z: 16.63}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2602,7 +2565,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1616879600}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.28, y: 0.77, z: 20.91}
+  m_LocalPosition: {x: 8.28, y: 0.77, z: 20.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2637,7 +2600,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1f1d57286f0a9b4ebd5fbe832c01c8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SpawnNumber: 15
+  SpawnNumber: 11
 --- !u!4 &1852025619
 Transform:
   m_ObjectHideFlags: 0
@@ -2727,7 +2690,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2009435024}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.6, y: 0.82, z: 14.93}
+  m_LocalPosition: {x: 0.98, y: 0.82, z: 14.93}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -2745,7 +2708,6 @@ GameObject:
   - component: {fileID: 2016035081}
   - component: {fileID: 2016035080}
   - component: {fileID: 2016035079}
-  - component: {fileID: 2016035083}
   - component: {fileID: 2016035084}
   - component: {fileID: 2016035085}
   m_Layer: 3
@@ -2831,22 +2793,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!54 &2016035083
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2016035078}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!114 &2016035084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2861,7 +2807,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Quantity: 50
   SpotNumber: 4
-  SpotDistance: 2
+  SpotDistance: 1.1
   SpotList: []
   SpotsGeneration: 1
 --- !u!208 &2016035085

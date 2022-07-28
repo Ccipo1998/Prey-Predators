@@ -8,6 +8,7 @@ TagManager:
   - Lion
   - Grass
   - Spot
+  - Water
   layers:
   - Default
   - TransparentFX
